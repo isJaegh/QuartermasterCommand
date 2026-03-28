@@ -1,7 +1,8 @@
 import { state, saveState } from '../state/store.js';
 import { CATEGORIES } from '../data/data.js';
 import { i18n } from '../data/lang.js';
-import { renderBankTable, renderMarketTable, updateVisibility } from '../ui/market_bank.js';
+import { renderBankTable } from '../ui/bank.js';
+import { renderMarketTable, updateVisibility } from '../ui/market.js';
 import { handlePipelineChange, clearPipelineProgress, updatePipelineVisuals, updateFocusView, navFocus } from './pipeline.js';
 import { resolveTree, resolveExtractions } from './engine.js';
 import { closeModal, openModal } from '../ui/modals.js';

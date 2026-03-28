@@ -8,7 +8,8 @@ import { restartPipeline, navFocus, setPipelineView, toggleGlobalPref, toggleSte
 import { calculate, handleModeChange, targetMetalChanged, calculateMax } from './core/app.js';
 import { applyColors, resetColors, toggleTheme } from './ui/theme.js';
 import { sendToDiscord, copyDiscord } from './network/discord.js';
-import { initMarketData, renderMarketTable, renderBankTable, autoFillCart, clearCart, quickAdd, quickSub, clearItem, removeMarketTier, addMarketTier, quickAddMarket, quickSubMarket, autoFillMarketItem, clearMarketTier, updateMarketTier } from './ui/market_bank.js';
+import { renderBankTable, quickAdd, quickSub, clearItem } from './ui/bank.js';
+import { initMarketData, renderMarketTable, autoFillCart, clearCart, removeMarketTier, addMarketTier, quickAddMarket, quickSubMarket, autoFillMarketItem, clearMarketTier, updateMarketTier } from './ui/market.js';
 import { setLang } from './data/lang.js';
 
 document.addEventListener('DOMContentLoaded', () => {
