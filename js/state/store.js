@@ -20,15 +20,6 @@ export const state = {
 };
 
 /**
- * Safely updates nested market data so modules don't accidentally overwrite objects
- */
-export function updateMarketTier(item, index, field, val) {
-    if (state.marketData[item] && state.marketData[item][index]) {
-        state.marketData[item][index][field] = Number(val) || 0;
-    }
-}
-
-/**
  * Gathers the current state and DOM values, then saves to localStorage
  */
 export function saveState() {
@@ -76,11 +67,33 @@ export function loadState() {
         const raw = localStorage.getItem('qm_data');
         if (raw) {
             const data = JSON.parse(raw);
+
+            // Restore state object
             if (data.lang) state.currentLang = data.lang;
             if (data.market) state.marketData = data.market;
             if (data.choices) state.userPathChoices = data.choices;
             if (data.collapsed) state.collapsedState = data.collapsed;
             if (data.visibility) state.moduleVisibility = data.visibility;
+            if (data.mode) state.prevMode = data.mode;
+
+            // Restore DOM values (templates must be pre-stamped before calling this)
+            const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+            const check = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+
+            if (data.target) set('targetAmount', data.target);
+            if (data.metal) set('targetMetal', data.metal);
+            if (data.crafters) set('crafters', data.crafters);
+            if (data.mode) set('mode', data.mode);
+            if (data.lang) set('lang', data.lang);
+            if (data.mods) {
+                check('modMast', data.mods.mast ?? true);
+                check('modRef', data.mods.ref ?? true);
+                check('modExt', data.mods.ext ?? true);
+            }
+            if (data.theme === 'light') {
+                document.body.classList.add('light-theme');
+                check('themeToggleCb', true);
+            }
         }
     } catch (e) {
         console.error("Save load failed", e);
@@ -110,9 +123,9 @@ export function generateShareCode() {
 
     if (shareCodeEl) {
         shareCodeEl.value = str;
-        shareCodeEl.select();
-        document.execCommand('copy');
-        alert("Share code copied to clipboard!");
+        navigator.clipboard.writeText(str).then(() => {
+            alert("Share code copied to clipboard!");
+        });
     }
 }
 

@@ -2,6 +2,7 @@ import { CATEGORIES } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { getRelevantItems } from '../core/engine.js';
 import { state } from '../state/store.js';
+import { openModal } from '../ui/modals.js';
 
 export function buildDiscordMessage() {
     const t = i18n[state.currentLang] || i18n['en'];
