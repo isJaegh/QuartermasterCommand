@@ -1,73 +1,78 @@
-# Quartermaster Command ⚔️
-**The Ultimate Mortal Online 2 Refining Suite & Logistics Dashboard**
+# Quartermaster Command - MO2 Refining Suite
 
-Quartermaster Command is an advanced, offline-capable Progressive Web Application (PWA) designed to calculate, track, and dispatch complex metallurgy and extraction pipelines in Mortal Online 2. 
+**Quartermaster Command** is a comprehensive, browser-based logistics and refining calculator built specifically for **Mortal Online 2**. Designed for dedicated crafters and guild quartermasters, it streamlines the complex process of metal refining, ore extraction, and resource management.
 
-Made by **[MTM] Jaegh** for the MERCANTORM guild.
-
----
-
-## 🌟 Key Features
-
-### 🧠 Intelligent Pipeline & Dynamic Routing
-Automatically maps out the multi-step extraction, refining, and smelting tasks required for complex metals like Steel, Tungsteel, and Oghmium.
-Force the calculation engine to prioritize specific recipes using the route badges:
-* **[E] Efficient Path:** Prioritizes recipes with the absolute lowest raw material cost.
-* **[Y] Max Yield:** Prioritizes recipes that generate the highest amount of secondary byproducts.
-* **[R] Region Locked:** Restricts the calculation to only use machinery available in specific local regions (e.g., locking out blast furnaces if you are in a remote town).
-
-### 🧮 "Calculate Max Craftable" Engine
-Instantly calculates the absolute maximum amount of a target metal you can produce based *strictly* on what you currently have in your inventory. No more guessing how much Steel your current Pig Iron and Coal will yield.
-
-### 🛒 Smart Market Cart
-Acts as a shopping list and budget tracker for your refining pipelines. 
-* Input local market prices and desired buy quantities. 
-* Use the **Auto-Fill** feature to let the system calculate exactly what materials you are missing. 
-* The total gold cost updates dynamically as you adjust tiers and quantities.
-
-### 📡 Discord Dispatch
-Generates a beautifully formatted Markdown work order—cleanly separating items you need to buy on the Market from items that require Manual Gathering. You can copy the text directly to your clipboard or push it straight to a Discord Webhook from the app.
-
-### 🌍 Global Localization (16 Languages)
-Fully translated and instantly toggleable between 16 different languages via the settings menu, including:
-*English, French, Arabic, Czech, German, Spanish, Finnish, Hungarian, Italian, Polish, Portuguese, Romanian, Russian, Swedish, Turkish, and Ukrainian.*
-
-### 🎨 Deep Customization & UI
-* **Dynamic Progress:** Visual progress bars track your missing components, shifting from red to green as you fulfill your logistics requirements.
-* **Theme Control:** Toggle Dark/Light modes, adjust primary/secondary accent colors, and hide modules you don't actively need.
-* **Byproduct Tracking:** Toggle the visibility of all secondary byproducts generated during the manufacturing pipeline.
-
-### 🔗 State Sharing & Export
-Save your current inventory, shopping cart, and pipeline goals to share with other crafters. Generate a short string code to share with guildmates, or choose CSV export to download your data as a spreadsheet.
+*Made by [MTM] Jaegh for the MERCATORUM guild.*
+*"Steel wins battles, silver wins wars"*
 
 ---
 
-## 🚀 Installation & Offline Setup
+## 🚀 Key Features
 
-Quartermaster Command is a static, client-side application. **No backend server or database is required**, meaning your data stays entirely local to your browser.
+### 1. Production Command & Manufacturing Pipeline
+* **Target Management:** Select an advanced target metal (e.g., Steel, Oghmium, Tungsteel, Cronite), input your desired quantity, and specify the number of crafters.
+* **Dynamic Pipeline:** The app automatically generates a step-by-step extraction and refining route using highly accurate, game-tested yield data.
+* **Route Optimization:** Toggle between **Efficient** (lowest overall material cost) and **Max Yield** (highest byproduct generation) paths. 
+* **Byproduct Tracking:** Calculates and totals all secondary materials (byproducts) generated during the extraction and refining processes.
 
-1. **Web Browser:** Simply access the hosted URL to use the app immediately.
-2. **Mobile / App Install (PWA):** Quartermaster Command features a Service Worker (`sw.js`). Visit the URL on a supported mobile or desktop browser and tap **"Add to Home Screen"** or **"Install"** to install it as a native, fully offline-capable app.
-3. **Local Use:** Download the repository files and double-click `index.html`.
+### 2. Inventory (Bank) & Market Cart
+* **Bank Management:** Input your current stash of raw materials, catalysts, and intermediate ores.
+* **Calculate Max Craftable:** A specialized calculator that evaluates your current bank and tells you the absolute maximum amount of your target resource you can craft *without* buying anything else.
+* **Market Cart:** Automatically calculates the exact missing components needed to reach your production goal. Features an **Auto-Fill** button to instantly add missing items to your shopping cart and calculate total costs.
 
-### 🔄 Auto-Updating PWA
-When installed as a PWA, Quartermaster Command will automatically detect when a new version is pushed to the repository. It will download the update silently in the background and notify you to refresh, ensuring you always have the latest MO2 recipes and features without losing your local inventory data.
+### 3. Guild Logistics & Discord Dispatch
+* **Discord Integration:** Hook up a Discord Webhook URL to instantly dispatch logistics orders directly to your guild's Discord server. Orders are neatly formatted to show missing components, market purchases, and gathering requirements.
+* **Share / Import Setups:** Generate a unique string code to share your current inventory, market cart, and target goals with other players, or paste a code to instantly load theirs.
+
+### 4. Customization & Accessibility
+* **Full Localization:** Translated into 16 languages (English, French, German, Spanish, Russian, Czech, and more).
+* **Theming:** Toggle between Dark Mode (Default) and Light Mode. Fully customizable Primary, Secondary, and Text colors to match your aesthetic.
+* **PWA Support:** Installable as a Progressive Web App (PWA) for a native, app-like experience on desktop or mobile.
 
 ---
 
-## 📂 Project Structure
+## 📊 Data Accuracy
+The extraction yields, catalyst requirements, and recipes are based on standard Mortal Online 2 refining data. It includes calculations for:
+* Proper Blast Furnace vs. standard Furnace smelting efficiencies.
+* Strict catalyst requirements for advanced metallurgy (e.g., Grain Steel, Steel, Messing, Bron).
+* Configurable skill modifiers (Mastery, Refining, and Extraction skills can be toggled to apply their respective +6% / +3% yield bonuses).
 
-* `/index.html` - The core application layout, modals, and UI framework.
-* `/styles.css` - Custom styling, responsive mobile grids, CSS badges, and theme variables.
-* `/js/app.js` - Main initialization, pipeline calculation loop, and DOM interaction logic.
-* `/js/engine.js` - The heavy-lifting recursive extraction and recipe resolution math.
-* `/js/data.js` - Database containing all MO2 item categories, prices, recipes, and yield tables.
-* `/js/lang.js` - 16-language translation dictionary and dynamic HTML Help injector.
-* `/js/market_bank.js` - Inventory, shopping cart, tier management, and search filtering logic.
-* `/js/pipeline.js` - Logic for checking off steps, routing path choices, and progress bar updates.
-* `/js/ui.js` - Modal triggers, sidebar toggles, and UI interactions.
-* `/js/state.js` - LocalStorage saving/loading mechanisms.
-* `/js/discord.js` - Webhook payload generation and string formatting.
-* `/js/theme.js` - Dark/Light mode and custom color hex handlers.
-* `/sw.js` - Service Worker for offline PWA caching and background updates.
-* `/manifest.json` - Web App Manifest for native installation capabilities.
+---
+
+## 🛠️ Tech Stack
+Quartermaster Command is built using lightweight, dependency-free web technologies:
+* **HTML5 / CSS3** (Custom responsive grid and modal system)
+* **Vanilla JavaScript (ES6 Modules)** (No React, Vue, or heavy frameworks)
+* **LocalStorage API** (Persistent state management without a backend database)
+* **Service Workers** (For PWA caching and offline capabilities)
+
+---
+
+## 📥 Installation & Usage (Important)
+
+Because this application utilizes modern JavaScript ES6 Modules (`import`/`export`), **you cannot simply double-click the `index.html` file to run it.** Modern web browsers will block the scripts from loading over the `file:///` protocol due to CORS security policies.
+
+To run the app, you must serve it through a local web server. Here are the three easiest ways to do this:
+
+### Option A: Visual Studio Code (Recommended)
+1. Open the project folder in VS Code.
+2. Install the **"Live Server"** extension.
+3. Open `index.html` and click the **"Go Live"** button in the bottom right corner.
+
+### Option B: Python (Windows / Mac / Linux)
+1. Open your terminal or command prompt.
+2. Navigate to the `QuartermasterCommand-main` folder.
+3. Run the following command: `python -m http.server 8000`
+4. Open your web browser and navigate to `http://localhost:8000`.
+
+### Option C: Node.js
+1. Open your terminal in the project folder.
+2. Run `npx http-server`.
+3. Open the provided `localhost` link in your browser.
+
+---
+
+## 📝 License & Contributions
+This project was created for the Mortal Online 2 community. Feel free to fork, modify, and host your own versions for your respective guilds! 
+
+*Special thanks to the MO2 community data miners and testers who make tools like this possible.*
