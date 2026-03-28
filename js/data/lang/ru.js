@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Сырье", basicExt: "Базовые экстракции", intOre: "Промежуточные руды", advOre: "Продвинутые руды", catalyst: "Катализаторы", refined: "Очищенные металлы", "Raw Materials": "Сырье", "Basic Extractions": "Базовые экстракции", "Intermediate Ores": "Промежуточные руды", "Advanced Ores": "Продвинутые руды", "Catalysts": "Катализаторы", "Refined Metals": "Очищенные металлы" },
     items: baseItems,
     helpHtml: helpContent['ru'],
-    ackBank: "Подтвердить", ackCart: "Подтвердить", ackPrefs: "Подтвердить", ackHelp: "Подтвердить", ackSettings: "Подтвердить"
+    ackBank: "Подтвердить", ackCart: "Подтвердить", ackPrefs: "Подтвердить", ackHelp: "Подтвердить", ackSettings: "Подтвердить",
+    searchPlaceholder: "Поиск...",
+    searchEmptyState: "Найдите материал, чтобы просмотреть детали производства.",
+    searchNotFound: "Материал с таким названием не найден.",
+    targetMetalLabel: "Целевой Материал:"
 };

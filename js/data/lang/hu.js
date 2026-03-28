@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Nyersanyagok", basicExt: "Alap Extrakciók", intOre: "Köztes Ércek", advOre: "Haladó Ércek", catalyst: "Katalizátorok", refined: "Finomított Fémek", "Raw Materials": "Nyersanyagok", "Basic Extractions": "Alap Extrakciók", "Intermediate Ores": "Köztes Ércek", "Advanced Ores": "Haladó Ércek", "Catalysts": "Katalizátorok", "Refined Metals": "Finomított Fémek" },
     items: baseItems,
     helpHtml: helpContent['hu'],
-    ackBank: "Rendben", ackCart: "Rendben", ackPrefs: "Rendben", ackHelp: "Rendben", ackSettings: "Rendben"
+    ackBank: "Rendben", ackCart: "Rendben", ackPrefs: "Rendben", ackHelp: "Rendben", ackSettings: "Rendben",
+    searchPlaceholder: "Keresés...",
+    searchEmptyState: "Keressen egy anyagot a gyártási részletek megtekintéséhez.",
+    searchNotFound: "Nem található ilyen nevű anyag.",
+    targetMetalLabel: "Célanyag:"
 };

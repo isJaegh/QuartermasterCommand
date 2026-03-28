@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Surowce", basicExt: "Podstawowe Ekstrakcje", intOre: "Rudy Pośrednie", advOre: "Rudy Zaawansowane", catalyst: "Katalizatory", refined: "Rafinowane Metale", "Raw Materials": "Surowce", "Basic Extractions": "Podstawowe Ekstrakcje", "Intermediate Ores": "Rudy Pośrednie", "Advanced Ores": "Rudy Zaawansowane", "Catalysts": "Katalizatory", "Refined Metals": "Rafinowane Metale" },
     items: baseItems,
     helpHtml: helpContent['pl'],
-    ackBank: "Potwierdź", ackCart: "Potwierdź", ackPrefs: "Potwierdź", ackHelp: "Potwierdź", ackSettings: "Potwierdź"
+    ackBank: "Potwierdź", ackCart: "Potwierdź", ackPrefs: "Potwierdź", ackHelp: "Potwierdź", ackSettings: "Potwierdź",
+    searchPlaceholder: "Szukaj...",
+    searchEmptyState: "Wyszukaj materiał, aby zobaczyć szczegóły produkcji.",
+    searchNotFound: "Nie znaleziono materiału o tej nazwie.",
+    targetMetalLabel: "Materiał Docelowy:"
 };

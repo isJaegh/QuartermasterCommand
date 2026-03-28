@@ -57,7 +57,10 @@
                         <span id="ui_showAllBank">Show All Materials</span>
                     </label>
                 </div>
-                <input type="text" id="searchBank" class="search-input" placeholder="Search...">
+                <div class="search-wrap">
+                    <input type="text" id="searchBank" class="search-input" placeholder="Search...">
+                    <button class="search-clear" data-action="clearSearch" data-target="searchBank" title="Clear search">&times;</button>
+                </div>
                 <div id="bankContainer"></div>
             </div>
             <div style="padding: 15px; border-top: 1px solid var(--border); text-align: right; background: var(--bg-card);">
@@ -84,7 +87,10 @@
                         <span id="ui_showAllCart">Show All Materials</span>
                     </label>
                 </div>
-                <input type="text" id="searchCart" class="search-input" placeholder="Search...">
+                <div class="search-wrap">
+                    <input type="text" id="searchCart" class="search-input" placeholder="Search...">
+                    <button class="search-clear" data-action="clearSearch" data-target="searchCart" title="Clear search">&times;</button>
+                </div>
                 <div id="marketContainer"></div>
             </div>
             <div style="padding: 15px; border-top: 1px solid var(--border); text-align: right; background: var(--bg-card);">
@@ -156,14 +162,29 @@
     <div id="helpModal" class="modal"></div>
     <template id="tpl_helpModal">
         <div class="modal-content module" style="padding: 0; max-width: 600px;">
-            <div class="modal-header-sticky">
-                <h3 style="margin:0; color:var(--accent);" id="ui_tabGuide">Help</h3>
-                <span class="close" data-close="helpModal">&times;</span>
+
+            <!-- Tab bar -->
+            <div class="modal-tabs">
+                <button class="tab-btn active" id="helpTabBtn_guide"     data-action="switchHelpTab" data-tab="guide"><span id="ui_tabGuide">Guide</span></button>
+                <button class="tab-btn"         id="helpTabBtn_materials" data-action="switchHelpTab" data-tab="materials"><span>Materials</span></button>
+                <button class="tab-btn"         id="helpTabBtn_legend"    data-action="switchHelpTab" data-tab="legend"><span>Legend</span></button>
+                <span class="close" data-close="helpModal" style="padding: 10px 15px;">&times;</span>
             </div>
-            <div class="modal-body-scroll">
+
+            <!-- Guide tab -->
+            <div id="helpTab_guide" class="tab-content active modal-body-scroll">
                 <div id="dynamicHelpContent" class="help-content"></div>
+            </div>
+
+            <!-- Materials tab -->
+            <div id="helpTab_materials" class="tab-content modal-body-scroll" style="display:none;">
+                <div id="helpResourcesList" style="padding: 4px;"></div>
+            </div>
+
+            <!-- Legend tab -->
+            <div id="helpTab_legend" class="tab-content modal-body-scroll" style="display:none;">
                 <div class="help-content">
-                    <h4 style="color:var(--accent); margin:30px 0 10px 0;" id="ui_legAcronyms">Acronyms</h4>
+                    <h4 style="color:var(--accent); margin:10px 0 14px 0;" id="ui_legAcronyms">Acronyms</h4>
                     <div class="legend-grid">
                         <div class="legend-card"><span class="legend-badge">CP</span> Calx Powder</div>
                         <div class="legend-card"><span class="legend-badge">SP</span> Saburra Powder</div>
@@ -181,6 +202,7 @@
                     </div>
                 </div>
             </div>
+
             <div style="padding: 15px; border-top: 1px solid var(--border); text-align: right; background: var(--bg-card);">
                 <button class="btn-dispatch" id="ui_ackHelp" data-close="helpModal" style="width: auto; display: inline-block; padding: 8px 16px;">Acknowledge</button>
             </div>
@@ -283,18 +305,17 @@
             <div class="module-body" style="display: flex; flex-wrap: wrap; gap: 20px; padding: 15px;">
                 <div style="flex: 1; min-width: 250px;">
                     <div class="input-row" style="margin-bottom: 12px;">
-                        <label id="ui_targetMetalLabel">Target Resource</label>
-                        <select id="targetMetal" style="font-weight: bold; color: var(--accent); width: 100%; max-width: 180px;">
-                            <option value="bleck" selected>Bleck</option>
-                            <option value="bron">Bron</option>
-                            <option value="cronite">Cronite</option>
-                            <option value="cuprum">Cuprum</option>
-                            <option value="messing">Messing</option>
-                            <option value="oghmium">Oghmium</option>
-                            <option value="steel">Steel</option>
-                            <option value="tmessing">Tindremic Messing</option>
-                            <option value="tungsteel">Tungsteel</option>
-                        </select>
+                        <label id="ui_targetMetalLabel">Search</label>
+                        <div style="position: relative; width: 100%; max-width: 180px;">
+                            <div class="search-wrap" style="margin-bottom: 0;">
+                                <input type="text" id="targetMetalSearch" class="search-input"
+                                       placeholder="Search..." autocomplete="off"
+                                       style="margin-bottom: 0;">
+                                <button class="search-clear" id="ui_clearTargetMetal" title="Clear">&times;</button>
+                                <div id="targetMetalDropdown" class="lookup-dropdown"></div>
+                            </div>
+                            <input type="hidden" id="targetMetal" value="">
+                        </div>
                     </div>
 
                     <div class="input-row">
@@ -306,6 +327,7 @@
                         <input type="number" id="crafters" value="1" style="width: 100%; max-width: 180px;">
                     </div>
                 </div>
+
             </div>
         </div>
 

@@ -36,5 +36,9 @@ export default {
     categories: baseCategories,
     items: baseItems,
     helpHtml: helpContent['en'],
-    ackBank: "Acknowledge", ackCart: "Acknowledge", ackPrefs: "Acknowledge", ackHelp: "Acknowledge", ackSettings: "Acknowledge"
+    ackBank: "Acknowledge", ackCart: "Acknowledge", ackPrefs: "Acknowledge", ackHelp: "Acknowledge", ackSettings: "Acknowledge",
+    searchPlaceholder: "Search...",
+    searchEmptyState: "Search for a material to view production details.",
+    searchNotFound: "No material found with that name.",
+    targetMetalLabel: "Target Material:"
 };

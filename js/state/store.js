@@ -3,11 +3,14 @@
 // ============================================================================
 
 import { buildShareCode, copyToClipboard, parseShareCode } from '../utils/clipboard.js';
+import { showToast } from '../utils/toast.js';
+import { showConfirm } from '../utils/confirm.js';
 
 export const state = {
     currentLang: 'en',
     prevMode: 'units',
     marketData: {},
+    bankData: {},
     pipelineStepsRaw: [],
     completedSteps: [],
     focusIndex: 0,
@@ -32,9 +35,16 @@ export function saveState() {
     const craftEl = document.getElementById('crafters');
     const modeEl = document.getElementById('mode');
 
+    const bankData = {};
+    document.querySelectorAll('#bankContainer input[id^="b_"]').forEach(el => {
+        bankData[el.id.slice(2)] = Number(el.value) || 0;
+    });
+    state.bankData = bankData;
+
     const data = {
         lang: state.currentLang,
         market: state.marketData,
+        bank: bankData,
         target: targetEl ? targetEl.value : 10000,
         metal: metalEl ? metalEl.value : 'bleck',
         crafters: craftEl ? craftEl.value : 1,
@@ -72,6 +82,7 @@ export function loadState() {
             // Restore state object
             if (data.lang) state.currentLang = data.lang;
             if (data.market) state.marketData = data.market;
+            if (data.bank) state.bankData = data.bank;
             if (data.choices) state.userPathChoices = data.choices;
             if (data.collapsed) state.collapsedState = data.collapsed;
             if (data.visibility) state.moduleVisibility = data.visibility;
@@ -105,17 +116,24 @@ export function loadState() {
  * Nuke the state
  */
 export function clearAll() {
-    if (!confirm("Reset all inventory values and shopping cart to zero?")) return;
-    localStorage.removeItem('qm_data');
-    location.reload(); // The most secure way to ensure memory is cleared
+    showConfirm("Reset all inventory values and shopping cart to zero?", () => {
+        localStorage.removeItem('qm_data');
+        location.reload();
+    });
 }
 
 /**
  * Generates a base64 share code for Discord/Guild members
  */
 export function generateShareCode() {
+    const bank = {};
+    document.querySelectorAll('#bankContainer input[id^="b_"]').forEach(el => {
+        bank[el.id.slice(2)] = Number(el.value) || 0;
+    });
+
     const data = {
         market: state.marketData,
+        bank,
         target: document.getElementById('targetAmount')?.value,
         metal: document.getElementById('targetMetal')?.value
     };
@@ -124,9 +142,9 @@ export function generateShareCode() {
 
     if (shareCodeEl) {
         shareCodeEl.value = str;
-        copyToClipboard(str).then(() => {
-            alert("Share code copied to clipboard!");
-        });
+        copyToClipboard(str)
+            .then(() => { showToast("Share code copied to clipboard!", 'success'); })
+            .catch(() => { showToast("Share code generated — copy it manually from the box above.", 'info'); });
     }
 }
 
@@ -141,6 +159,14 @@ export function loadShareCode() {
         const data = parseShareCode(shareCodeEl.value);
         if (data.market) state.marketData = data.market;
 
+        if (data.bank) {
+            state.bankData = data.bank;
+            Object.keys(data.bank).forEach(k => {
+                const el = document.getElementById('b_' + k);
+                if (el) el.value = data.bank[k];
+            });
+        }
+
         const targetEl = document.getElementById('targetAmount');
         if (targetEl && data.target) targetEl.value = data.target;
 
@@ -150,7 +176,7 @@ export function loadShareCode() {
         saveState();
         location.reload(); // Reload to apply the new state across the entire app
     } catch (e) {
-        alert("Invalid share code.");
+        showToast("Invalid share code.", 'error');
         console.error(e);
     }
 }

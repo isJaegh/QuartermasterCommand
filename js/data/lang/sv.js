@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Råmaterial", basicExt: "Grundextraktioner", intOre: "Mellanmalmer", advOre: "Avancerade Malmer", catalyst: "Katalysatorer", refined: "Raffinerade Metaller", "Raw Materials": "Råmaterial", "Basic Extractions": "Grundextraktioner", "Intermediate Ores": "Mellanmalmer", "Advanced Ores": "Avancerade Malmer", "Catalysts": "Katalysatorer", "Refined Metals": "Raffinerade Metaller" },
     items: baseItems,
     helpHtml: helpContent['sv'],
-    ackBank: "Bekräfta", ackCart: "Bekräfta", ackPrefs: "Bekräfta", ackHelp: "Bekräfta", ackSettings: "Bekräfta"
+    ackBank: "Bekräfta", ackCart: "Bekräfta", ackPrefs: "Bekräfta", ackHelp: "Bekräfta", ackSettings: "Bekräfta",
+    searchPlaceholder: "Sök...",
+    searchEmptyState: "Sök efter ett material för att se produktionsdetaljer.",
+    searchNotFound: "Inget material hittades med det namnet.",
+    targetMetalLabel: "Målmaterial:"
 };

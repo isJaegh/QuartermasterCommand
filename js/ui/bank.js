@@ -16,7 +16,7 @@ export function renderBankTable() {
         html += `<div id="b_cat_${cat.id}" style="display:none;"><div class="bank-category" style="margin-top:10px; margin-bottom:5px;">${(t.categories && t.categories[cat.id]) ? t.categories[cat.id] : cat.id}</div>`;
 
         cat.items.forEach(k => {
-            const val = Number(document.getElementById('b_' + k)?.value) || 0;
+            const val = Number(document.getElementById('b_' + k)?.value) || state.bankData[k] || 0;
             let itemName = getItemName(k, t);
 
             html += `<div class="bank-row" id="row_b_${k}" style="display:none;">
@@ -33,6 +33,7 @@ export function renderBankTable() {
         });
         html += `</div>`;
     });
+    html += `<div id="bankSearchEmpty" class="search-empty" style="display:none;">No items match your search.</div>`;
     container.innerHTML = html;
 
     if (!container.dataset.listenersBound) {

@@ -5,6 +5,7 @@ import { state } from '../state/store.js';
 import { openModal } from '../ui/modals.js';
 import { getItemName } from '../utils/format.js';
 import { buildShareCode, copyToClipboard } from '../utils/clipboard.js';
+import { showToast } from '../utils/toast.js';
 
 export function buildDiscordMessage() {
     const t = i18n[state.currentLang] || i18n['en'];
@@ -117,9 +118,9 @@ export function buildDiscordMessage() {
 
 export function copyDiscord() {
     const t = i18n[state.currentLang] || i18n['en'];
-    copyToClipboard(buildDiscordMessage()).then(() => {
-        alert(t.discCopied || "Copied to clipboard!");
-    });
+    copyToClipboard(buildDiscordMessage())
+        .then(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); })
+        .catch(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); });
 }
 
 export async function sendToDiscord() {
@@ -127,7 +128,7 @@ export async function sendToDiscord() {
     const webhookUrl = document.getElementById('webhookUrl').value;
     const WEBHOOK_RE = /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
     if (!webhookUrl || !WEBHOOK_RE.test(webhookUrl)) {
-        alert(t.errWebhook || "Invalid Webhook URL");
+        showToast(t.errWebhook || "Invalid Webhook URL", 'error');
         openModal('settingsModal');
         return;
     }
@@ -141,9 +142,9 @@ export async function sendToDiscord() {
             body: JSON.stringify({ content: msg })
         });
 
-        if (response.ok) alert(t.sucSend || "Order dispatched to Discord!");
-        else alert((t.errSend || "Failed to send.") + ` Status: ${response.status}`);
+        if (response.ok) showToast(t.sucSend || "Order dispatched to Discord!", 'success');
+        else showToast((t.errSend || "Failed to send.") + ` Status: ${response.status}`, 'error');
     } catch (e) {
-        alert((t.errSend || "Failed to send.") + " " + e.message);
+        showToast((t.errSend || "Failed to send.") + " " + e.message, 'error');
     }
 }

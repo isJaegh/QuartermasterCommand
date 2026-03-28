@@ -50,6 +50,8 @@ export function targetMetalChanged() {
 
 export function run() {
     clearTimeout(timer);
+    document.getElementById('gatherOutput')?.classList.add('calculating');
+    document.getElementById('stepsOutput')?.classList.add('calculating');
     timer = setTimeout(calculate, 150);
 }
 
@@ -185,7 +187,10 @@ function readInputs() {
 }
 
 function renderEmpty({ t, targetMetal }) {
-    document.getElementById('gatherOutput').innerHTML = `<div class="empty-msg">${t.noTarget || 'No target set.'}</div>`;
+    const emptyMsg = targetMetal
+        ? `<div class="empty-msg">${t.noTarget || 'No target set.'}</div>`
+        : `<div class="empty-msg">${t.searchEmptyState || 'Search for a material to view production details.'}</div>`;
+    document.getElementById('gatherOutput').innerHTML = emptyMsg;
     document.getElementById('stepsOutput').innerHTML = "";
     document.getElementById('statStacks').innerText = "0.00";
     if (document.getElementById('cartTotalGold')) document.getElementById('cartTotalGold').innerText = "0.00 g";
@@ -194,9 +199,14 @@ function renderEmpty({ t, targetMetal }) {
     state.byproductsRaw = {};
     state.pureDeficits = {};
 
-    if (document.getElementById('row_chkBp')) document.getElementById('row_chkBp').style.display = 'none';
     if (document.getElementById('bpContainer')) document.getElementById('bpContainer').style.display = 'none';
+
+    // Reset Progress Bars and Texts
     if (document.getElementById('gatherProgressBar')) document.getElementById('gatherProgressBar').style.width = '0%';
+    if (document.getElementById('gatherProgressText')) {
+        document.getElementById('gatherProgressText').innerText = '0%';
+        document.getElementById('gatherProgressText').style.color = 'var(--text)';
+    }
     if (document.getElementById('projectProgressBar')) document.getElementById('projectProgressBar').style.width = '0%';
     if (document.getElementById('projectProgressText')) {
         document.getElementById('projectProgressText').innerText = "0%";
@@ -252,7 +262,7 @@ function runCalculations({ targetRaw, targetMetal, mult, mR, mE, mM, bank, purch
     return { grossTree, grossExtractions, actualExtractions, finalDeficits };
 }
 
-function renderLogistics({ mode, t, targetMetal, mult, bank, purchased, totalGold }, { grossTree, grossExtractions, actualExtractions, finalDeficits }) {
+function renderLogistics({ mode, t, targetMetal, mult, showBp, bank, purchased, totalGold }, { grossTree, grossExtractions, actualExtractions, finalDeficits }) {
     getAllItems().forEach(k => {
         const costEl = document.getElementById('cost_' + k);
         const stashEl = document.getElementById('stash_' + k);
@@ -294,24 +304,22 @@ function renderLogistics({ mode, t, targetMetal, mult, bank, purchased, totalGol
                 totalAcquiredUnits += amountAcquired;
                 totalNeededUnits += totalNeeded;
 
-                let hue = Math.floor((progressPct / 100) * 120);
-                let colorStr = `hsl(${hue}, 80%, 50%)`;
                 let itemName = getItemName(k, t);
 
                 if (isComplete) {
-                    catHtml += `<div class="logistics-item" style="border-left-color: ${colorStr}; --prog: 100%; --hue: 120;">
-                        <span style="font-weight:bold; color:var(--text); text-decoration: line-through; opacity: 0.5;">${itemName}</span>
+                    catHtml += `<div class="logistics-item" style="border-left-color: var(--success); --prog: 100%; --hue: 120;">
+                        <span style="font-weight:bold; color:var(--text-dim); text-decoration: line-through; opacity: 0.6;">${itemName}</span>
                         <div style="display: flex; align-items: center; justify-content: flex-end;">
-                            <span style="color:var(--text-dim); font-weight:normal; margin-right: 12px; text-align: right; text-decoration: line-through; opacity: 0.5;">${fmtVal}</span>
-                            <span style="color:${colorStr}; font-weight: bold; text-align: right; min-width: 40px;">100%</span>
+                            <span style="color:var(--text-dim); font-weight:normal; margin-right: 12px; text-align: right; text-decoration: line-through; opacity: 0.6;">${fmtVal}</span>
+                            <span style="color:var(--success); font-weight: bold; text-align: right; min-width: 40px;">100%</span>
                         </div>
                     </div>`;
                 } else {
-                    catHtml += `<div class="logistics-item" style="border-left-color: ${colorStr}; --prog: ${progressPct}%; --hue: ${hue};">
+                    catHtml += `<div class="logistics-item" style="border-left-color: var(--accent); --prog: ${progressPct}%; --hue: 45;">
                         <span style="font-weight:bold; color:var(--text);">${itemName}</span>
                         <div style="display: flex; align-items: center; justify-content: flex-end;">
                             <span style="color:var(--text-dim); font-weight:normal; margin-right: 12px; text-align: right;">${fmtVal}</span>
-                            <span style="color:${colorStr}; font-weight: bold; text-align: right; min-width: 40px;">${progressPct.toFixed(0)}%</span>
+                            <span style="color:var(--accent); font-weight: bold; text-align: right; min-width: 40px;">${progressPct.toFixed(0)}%</span>
                         </div>
                     </div>`;
                 }
@@ -323,14 +331,19 @@ function renderLogistics({ mode, t, targetMetal, mult, bank, purchased, totalGol
         }
     });
 
-    document.getElementById('gatherOutput').innerHTML = totalNeededUnits > 0 ? gHTML : `<div class="empty-msg">${t.allCovered || 'All covered!'}</div>`;
+    document.getElementById('gatherOutput').innerHTML = gHTML !== '' ? gHTML : `<div class="empty-msg">${t.allCovered || 'All covered!'}</div>`;
     document.getElementById('statStacks').innerText = (totalGatherUnits / 10000).toFixed(2);
 
     const gatherOverallPct = totalNeededUnits > 0 ? (totalAcquiredUnits / totalNeededUnits) * 100 : 100;
+    const gatherColor = gatherOverallPct >= 100 && totalNeededUnits > 0 ? 'var(--success)' : 'var(--accent)';
+
     if (document.getElementById('gatherProgressBar')) {
-        let hueBar = Math.floor((gatherOverallPct / 100) * 120);
         document.getElementById('gatherProgressBar').style.width = gatherOverallPct + '%';
-        document.getElementById('gatherProgressBar').style.backgroundColor = `hsl(${hueBar}, 70%, 50%)`;
+        document.getElementById('gatherProgressBar').style.backgroundColor = gatherColor;
+    }
+    if (document.getElementById('gatherProgressText')) {
+        document.getElementById('gatherProgressText').innerText = gatherOverallPct.toFixed(0) + '%';
+        document.getElementById('gatherProgressText').style.color = gatherColor;
     }
 }
 
@@ -417,9 +430,11 @@ function renderPipeline({ t, crafters, showBp }) {
 }
 
 export function calculate() {
+    document.getElementById('gatherOutput')?.classList.remove('calculating');
+    document.getElementById('stepsOutput')?.classList.remove('calculating');
     const inputs = readInputs();
 
-    if (inputs.targetRaw <= 0) {
+    if (!inputs.targetMetal || inputs.targetRaw <= 0) {
         renderEmpty(inputs);
         return;
     }
@@ -429,4 +444,35 @@ export function calculate() {
     renderPipeline(inputs, results);
     updateVisibility(inputs.targetMetal);
     saveState();
+}
+
+// ----------------------------------------------------------------------------
+// NEW: DYNAMICALLY UPDATE LOGISTICS UPON STEP COMPLETION
+// ----------------------------------------------------------------------------
+export function updateLogisticsOnly() {
+    const inputs = readInputs();
+    if (!inputs.targetMetal || inputs.targetRaw <= 0) return;
+
+    // We calculate the required totals
+    const grossTree = resolveTree(inputs.targetMetal, inputs.targetRaw * inputs.mult, {}, inputs.mR);
+    const grossExtractions = resolveExtractions(grossTree.deficits, inputs.mE, inputs.mM, {});
+
+    // We calculate deficits based on the CURRENT bank (which now includes the yielded steps)
+    const virtualBank = {};
+    Object.keys(inputs.bank).forEach(k => virtualBank[k] = inputs.bank[k] + inputs.purchased[k]);
+
+    const actualTree = resolveTree(inputs.targetMetal, inputs.targetRaw * inputs.mult, virtualBank, inputs.mR);
+    const actualExtractions = resolveExtractions(actualTree.deficits, inputs.mE, inputs.mM, virtualBank);
+
+    const finalDeficits = {};
+    [...Object.keys(actualTree.intermediates), ...Object.keys(actualExtractions.raw), ...Object.keys(actualExtractions.extracted)].forEach(k => {
+        let missing = 0;
+        if (actualExtractions.raw[k]) missing += actualExtractions.raw[k];
+        if (actualTree.intermediates[k]) missing += actualTree.intermediates[k];
+        if (actualExtractions.extracted[k]) missing += actualExtractions.extracted[k];
+        if (missing > 0) finalDeficits[k] = missing;
+    });
+
+    // Re-render ONLY the Missing Components section
+    renderLogistics(inputs, { grossTree, grossExtractions, actualExtractions, finalDeficits });
 }

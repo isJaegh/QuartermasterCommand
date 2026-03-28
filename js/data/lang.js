@@ -23,11 +23,27 @@ export const i18n = { en, fr, de, es, it, ar, ro, pl, pt, ru, fi, uk, hu, tr, sv
 export function setLang(lang) {
     state.currentLang = lang;
     const t = i18n[lang] || i18n['en'];
+
+    // 1. Automatically update standard UI text elements
     Object.keys(t).forEach(key => {
         const el = document.getElementById('ui_' + key);
         if (el && typeof t[key] === 'string') el.innerText = t[key];
     });
+
+    // 2. Manually update placeholders for the search inputs
+    if (t.searchPlaceholder) {
+        const targetSearch = document.getElementById('targetMetalSearch');
+        const bankSearch = document.getElementById('searchBank');
+        const cartSearch = document.getElementById('searchCart');
+
+        if (targetSearch) targetSearch.placeholder = t.searchPlaceholder;
+        if (bankSearch) bankSearch.placeholder = t.searchPlaceholder;
+        if (cartSearch) cartSearch.placeholder = t.searchPlaceholder;
+    }
+
+    // 3. Update language dropdown selector
     const langEl = document.getElementById('lang');
     if (langEl) langEl.value = lang;
+
     saveState();
 }

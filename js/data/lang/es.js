@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Materias Primas", basicExt: "Extracciones Básicas", intOre: "Minerales Intermedios", advOre: "Minerales Avanzados", catalyst: "Catalizadores", refined: "Metales Refinados", "Raw Materials": "Materias Primas", "Basic Extractions": "Extracciones Básicas", "Intermediate Ores": "Minerales Intermedios", "Advanced Ores": "Minerales Avanzados", "Catalysts": "Catalizadores", "Refined Metals": "Metales Refinados" },
     items: baseItems,
     helpHtml: helpContent['es'],
-    ackBank: "Aceptar", ackCart: "Aceptar", ackPrefs: "Aceptar", ackHelp: "Aceptar", ackSettings: "Aceptar"
+    ackBank: "Aceptar", ackCart: "Aceptar", ackPrefs: "Aceptar", ackHelp: "Aceptar", ackSettings: "Aceptar",
+    searchPlaceholder: "Buscar...",
+    searchEmptyState: "Busque un material para ver los detalles de producción.",
+    searchNotFound: "No se encontró ningún material con ese nombre.",
+    targetMetalLabel: "Material Objetivo:"
 };

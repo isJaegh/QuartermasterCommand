@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Materie Prime", basicExt: "Estrazioni Base", intOre: "Minerali Intermedi", advOre: "Minerali Avanzati", catalyst: "Catalizzatori", refined: "Metalli Raffinati", "Raw Materials": "Materie Prime", "Basic Extractions": "Estrazioni Base", "Intermediate Ores": "Minerali Intermedi", "Advanced Ores": "Minerali Avanzados", "Catalysts": "Catalizzatori", "Refined Metals": "Metalli Raffinati" },
     items: baseItems,
     helpHtml: helpContent['it'],
-    ackBank: "Conferma", ackCart: "Conferma", ackPrefs: "Conferma", ackHelp: "Conferma", ackSettings: "Conferma"
+    ackBank: "Conferma", ackCart: "Conferma", ackPrefs: "Conferma", ackHelp: "Conferma", ackSettings: "Conferma",
+    searchPlaceholder: "Cerca...",
+    searchEmptyState: "Cerca un materiale per visualizzare i dettagli di produzione.",
+    searchNotFound: "Nessun materiale trovato con quel nome.",
+    targetMetalLabel: "Materiale Bersaglio:"
 };

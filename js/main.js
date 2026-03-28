@@ -3,13 +3,14 @@
 // ============================================================================
 
 import { state, saveState, loadState, clearAll, generateShareCode, loadShareCode } from './state/store.js';
-import { openModal, closeModal, switchTab, toggleSidebar } from './ui/modals.js';
+import { openModal, closeModal, switchTab, switchHelpTab, toggleSidebar } from './ui/modals.js';
 import { restartPipeline, navFocus, setPipelineView, toggleGlobalPref, toggleStep, updatePathChoice, handlePipelineChange } from './core/pipeline.js';
 import { calculate, handleModeChange, targetMetalChanged, calculateMax } from './core/app.js';
 import { applyColors, resetColors, toggleTheme, syncColorPickers } from './ui/theme.js';
 import { sendToDiscord, copyDiscord } from './network/discord.js';
 import { renderBankTable } from './ui/bank.js';
-import { initMarketData, renderMarketTable, autoFillCart, clearCart } from './ui/market.js';
+import { initMarketData, renderMarketTable, autoFillCart, clearCart, updateVisibility } from './ui/market.js';
+import { initUnifiedSearch, isLookupMode, refreshLookup } from './ui/lookup.js';
 import { setLang } from './data/lang.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
     loadState();
     syncColorPickers();
 
+    // Restore module visibility from saved state
+    Object.entries(state.moduleVisibility).forEach(([modId, visible]) => {
+        const el = document.getElementById(modId);
+        if (el && !visible) el.classList.add('module-hidden');
+    });
+
     // Restore market initialization if missing
     if (Object.keys(state.marketData).length === 0) initMarketData();
 
@@ -39,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render the UI tables now that their DOM containers exist
     renderBankTable();
     renderMarketTable();
+
+    // Initialise the unified material search in Production Command
+    initUnifiedSearch();
 
     calculate(); // Now this runs perfectly without crashing!
 
@@ -93,6 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        if (target.closest('[data-action="switchHelpTab"]')) {
+            switchHelpTab(target.closest('[data-action="switchHelpTab"]').dataset.tab);
+            return;
+        }
+
         if (target.closest('#btnToggleSidebar') || target.id === 'sidebarOverlay' || target.closest('#btnCloseSidebar')) {
             toggleSidebar();
             return;
@@ -136,6 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btn.id === 'btnFocusNext') navFocus(1);
         }
 
+        if (target.closest('[data-action="clearSearch"]')) {
+            const inputId = target.closest('[data-action="clearSearch"]').dataset.target;
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.value = '';
+                updateVisibility(document.getElementById('targetMetal')?.value || '');
+            }
+            return;
+        }
+
         if (target.closest('[data-action="setPipeView"]')) {
             setPipelineView(target.closest('[data-action="setPipeView"]').dataset.view);
             return;
@@ -162,7 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const modId = target.id.replace('view_', 'mod_');
             const el = document.getElementById(modId);
             if (el) {
-                el.classList.toggle('module-hidden', !target.checked);
+                if (!target.checked) {
+                    el.classList.add('module-fading');
+                    setTimeout(() => {
+                        el.classList.remove('module-fading');
+                        el.classList.add('module-hidden');
+                    }, 250);
+                } else {
+                    el.classList.remove('module-hidden');
+                    el.classList.add('module-fading');
+                    requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('module-fading')));
+                }
                 state.moduleVisibility[modId] = target.checked;
                 saveState();
             }
@@ -175,8 +210,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('input', (e) => {
         const target = e.target;
-        if (['targetAmount', 'crafters'].includes(target.id)) calculate();
+        if (['targetAmount', 'crafters'].includes(target.id)) {
+            // In lookup mode re-render the lookup cards with the new qty;
+            // otherwise let the normal pipeline calculate() run.
+            if (isLookupMode()) refreshLookup();
+            else calculate();
+        }
         if (target.id === 'targetMetal') targetMetalChanged();
+        if (target.id === 'searchBank' || target.id === 'searchCart') {
+            const metal = document.getElementById('targetMetal')?.value || '';
+            updateVisibility(metal);
+        }
     });
 
     document.addEventListener('pipeline:changed', () => calculate());

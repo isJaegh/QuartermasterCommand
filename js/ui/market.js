@@ -141,6 +141,7 @@ export function renderMarketTable() {
         html += `</div>`;
     });
 
+    html += `<div id="cartSearchEmpty" class="search-empty" style="display:none;">No items match your search.</div>`;
     html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:10px; border-top:1px solid var(--border);"><div style="font-weight:bold; text-transform:uppercase; color:var(--text-dim);">${t.cartTotal || 'Total'}</div><div id="cartTotalGold" style="font-weight:bold; color:var(--accent); font-size:1.3em;">0.00 g</div></div>`;
     container.innerHTML = html;
 
@@ -182,6 +183,9 @@ export function updateVisibility(targetMetal) {
     const searchCart = (document.getElementById('searchCart')?.value || "").toLowerCase();
     const t = i18n[state.currentLang] || i18n['en'];
 
+    let totalVisibleBank = 0;
+    let totalVisibleCart = 0;
+
     CATEGORIES.forEach(cat => {
         let catHasVisibleBank = false;
         let catHasVisibleMarket = false;
@@ -204,7 +208,7 @@ export function updateVisibility(targetMetal) {
                 }
 
                 rowB.style.display = shouldShow ? 'grid' : 'none';
-                if (shouldShow) catHasVisibleBank = true;
+                if (shouldShow) { catHasVisibleBank = true; totalVisibleBank++; }
             }
 
             const rowM = document.getElementById('row_m_' + k);
@@ -218,7 +222,7 @@ export function updateVisibility(targetMetal) {
                 }
 
                 rowM.style.display = shouldShow ? 'block' : 'none';
-                if (shouldShow) catHasVisibleMarket = true;
+                if (shouldShow) { catHasVisibleMarket = true; totalVisibleCart++; }
             }
         });
 
@@ -228,4 +232,10 @@ export function updateVisibility(targetMetal) {
         const mCatDiv = document.getElementById('m_cat_' + cat.id);
         if (mCatDiv) mCatDiv.style.display = catHasVisibleMarket ? 'block' : 'none';
     });
+
+    const bankEmpty = document.getElementById('bankSearchEmpty');
+    if (bankEmpty) bankEmpty.style.display = (searchBank !== '' && totalVisibleBank === 0) ? 'block' : 'none';
+
+    const cartEmpty = document.getElementById('cartSearchEmpty');
+    if (cartEmpty) cartEmpty.style.display = (searchCart !== '' && totalVisibleCart === 0) ? 'block' : 'none';
 }

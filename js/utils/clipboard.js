@@ -2,7 +2,21 @@
  * Copies text to the clipboard using the modern Clipboard API.
  */
 export async function copyToClipboard(text) {
-    return navigator.clipboard.writeText(text);
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+    }
+    // Fallback for http/file contexts
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(el);
+    el.select();
+    el.setSelectionRange(0, 99999);
+    try {
+        if (!document.execCommand('copy')) throw new Error('execCommand failed');
+    } finally {
+        document.body.removeChild(el);
+    }
 }
 
 /**
@@ -17,5 +31,10 @@ export function buildShareCode(data) {
  * Throws if the string is invalid.
  */
 export function parseShareCode(str) {
-    return JSON.parse(atob(str));
+    try {
+        return JSON.parse(atob(str));
+    } catch {
+        // Fallback for codes generated with encodeURIComponent encoding
+        return JSON.parse(decodeURIComponent(atob(str)));
+    }
 }

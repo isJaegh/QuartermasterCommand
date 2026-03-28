@@ -1,5 +1,7 @@
 import { state, saveState } from '../state/store.js';
 import { i18n } from '../data/lang.js';
+import { showConfirm } from '../utils/confirm.js';
+import { updateLogisticsOnly } from './app.js'; // Imported logistics updater
 
 const triggerRecalc = () => document.dispatchEvent(new CustomEvent('pipeline:changed'));
 
@@ -163,9 +165,7 @@ export function updatePipelineVisuals() {
     const progBar = document.getElementById('projectProgressBar');
     const progText = document.getElementById('projectProgressText');
 
-    // DYNAMIC COLOR UPDATES FOR PIPELINE PERCENTAGE
-    let hue = Math.floor((percent / 100) * 120);
-    let colorStr = `hsl(${hue}, 80%, 50%)`;
+    let colorStr = percent === 100 ? 'var(--success)' : 'var(--accent)';
 
     if (progBar) {
         progBar.style.width = percent + '%';
@@ -226,13 +226,16 @@ export function toggleStep(index) {
 
     updatePipelineVisuals();
     saveState();
+    updateLogisticsOnly(); // Instantly update missing components
 }
 
 export function restartPipeline() {
     const t = i18n[state.currentLang] || i18n['en'];
-    if (!confirm(t.restartPrompt || "Restart the pipeline? This will un-check all steps and remove their yields from your inventory.")) return;
-    clearPipelineProgress();
-    updatePipelineVisuals();
-    if (state.pipelineViewMode === 'focus') updateFocusView();
-    saveState();
+    showConfirm(t.restartPrompt || "Restart the pipeline? This will un-check all steps and remove their yields from your inventory.", () => {
+        clearPipelineProgress();
+        updatePipelineVisuals();
+        if (state.pipelineViewMode === 'focus') updateFocusView();
+        saveState();
+        updateLogisticsOnly(); // Instantly revert missing components
+    });
 }

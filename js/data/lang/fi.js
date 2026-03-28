@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Raaka-aineet", basicExt: "Peruserottelut", intOre: "Välimalmit", advOre: "Edistyneet malmit", catalyst: "Katalyytit", refined: "Jalostetut metallit", "Raw Materials": "Raaka-aineet", "Basic Extractions": "Peruserottelut", "Intermediate Ores": "Välimalmit", "Advanced Ores": "Edistyneet malmit", "Catalysts": "Katalyytit", "Refined Metals": "Jalostetut metallit" },
     items: baseItems,
     helpHtml: helpContent['fi'],
-    ackBank: "Vahvista", ackCart: "Vahvista", ackPrefs: "Vahvista", ackHelp: "Vahvista", ackSettings: "Vahvista"
+    ackBank: "Vahvista", ackCart: "Vahvista", ackPrefs: "Vahvista", ackHelp: "Vahvista", ackSettings: "Vahvista",
+    searchPlaceholder: "Hae...",
+    searchEmptyState: "Etsi materiaalia nähdäksesi tuotantotiedot.",
+    searchNotFound: "Tällä nimellä ei löytynyt materiaalia.",
+    targetMetalLabel: "Kohdemateriaali:"
 };

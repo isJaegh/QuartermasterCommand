@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Materii Prime", basicExt: "Extracții de Bază", intOre: "Minereuri Intermediare", advOre: "Minereuri Avansate", catalyst: "Catalizatori", refined: "Metale Rafinate", "Raw Materials": "Materii Prime", "Basic Extractions": "Extracții de Bază", "Intermediate Ores": "Minereuri Intermediare", "Advanced Ores": "Minereuri Avansate", "Catalysts": "Catalizatori", "Refined Metals": "Metale Rafinate" },
     items: baseItems,
     helpHtml: helpContent['ro'],
-    ackBank: "Confirmă", ackCart: "Confirmă", ackPrefs: "Confirmă", ackHelp: "Confirmă", ackSettings: "Confirmă"
+    ackBank: "Confirmă", ackCart: "Confirmă", ackPrefs: "Confirmă", ackHelp: "Confirmă", ackSettings: "Confirmă",
+    searchPlaceholder: "Căutare...",
+    searchEmptyState: "Căutați un material pentru a vedea detaliile de producție.",
+    searchNotFound: "Niciun material găsit cu acest nume.",
+    targetMetalLabel: "Material Țintă:"
 };

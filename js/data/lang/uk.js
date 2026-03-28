@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Сировина", basicExt: "Базові екстракції", intOre: "Проміжні руди", advOre: "Просунуті руди", catalyst: "Каталізатори", refined: "Очищені метали", "Raw Materials": "Сировина", "Basic Extractions": "Базові екстракції", "Intermediate Ores": "Проміжні руди", "Advanced Ores": "Просунуті руди", "Catalysts": "Каталізатори", "Refined Metals": "Очищені метали" },
     items: baseItems,
     helpHtml: helpContent['uk'],
-    ackBank: "Підтвердити", ackCart: "Підтвердити", ackPrefs: "Підтвердити", ackHelp: "Підтвердити", ackSettings: "Підтвердити"
+    ackBank: "Підтвердити", ackCart: "Підтвердити", ackPrefs: "Підтвердити", ackHelp: "Підтвердити", ackSettings: "Підтвердити",
+    searchPlaceholder: "Пошук...",
+    searchEmptyState: "Знайдіть матеріал, щоб переглянути деталі виробництва.",
+    searchNotFound: "Матеріал з такою назвою не знайдено.",
+    targetMetalLabel: "Цільовий Матеріал:"
 };

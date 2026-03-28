@@ -325,3 +325,76 @@ export function resolveExtractions(deficits, mE, mM, bankData) {
 
     return { raw, grossRaw, bp, extSteps, extracted };
 }
+
+// ============================================================================
+// RECIPE LOOKUP — supports any item, not just target metals
+// ============================================================================
+
+let _reverseIndex = null;
+function buildReverseIndex() {
+    if (_reverseIndex) return _reverseIndex;
+    _reverseIndex = {};
+    for (const [source, routes] of Object.entries(EXTRACTION_ROUTES)) {
+        for (const [routeName, route] of Object.entries(routes)) {
+            for (const [item, yieldRate] of Object.entries(route.yields)) {
+                if (!_reverseIndex[item]) _reverseIndex[item] = [];
+                _reverseIndex[item].push({
+                    source,
+                    routeName,
+                    action: route.action,
+                    cat: route.cat || null,
+                    catReq: route.catReq || 0,
+                    yieldRate
+                });
+            }
+        }
+    }
+    return _reverseIndex;
+}
+
+/**
+ * Returns an array of route result objects for any craftable item at a given quantity.
+ * Covers refined metals (alloy/smelt via RECIPES) and all extracted/intermediate items
+ * (via reverse-indexed EXTRACTION_ROUTES). Returns [] for raw materials.
+ */
+export function lookupRecipe(itemKey, qty) {
+    const results = [];
+
+    // 1. Refined metals — alloy or smelt recipes
+    if (RECIPES[itemKey]) {
+        for (const [recipeName, recObj] of Object.entries(RECIPES[itemKey])) {
+            if (recObj.type === 'alloy') {
+                const primaryNeeded = Math.ceil(qty / 0.7);
+                const cat1Needed = Math.ceil(primaryNeeded * 0.5);
+                const cat2Needed = Math.ceil(primaryNeeded * 0.5);
+                results.push({ type: 'alloy', routeName: recipeName, primary: recObj.primary, primaryNeeded, cat1: recObj.cat1, cat1Needed, cat2: recObj.cat2, cat2Needed });
+            } else if (recObj.type === 'smelt') {
+                const oreNeeded = Math.ceil(qty / recObj.oreYield);
+                const catNeeded = Math.ceil(oreNeeded * recObj.catReq);
+                results.push({ type: 'smelt', routeName: recipeName, ore: recObj.ore, oreNeeded, cat: recObj.cat, catNeeded });
+            }
+        }
+    }
+
+    // 2. Extracted / intermediate items — reverse lookup through EXTRACTION_ROUTES
+    const reverseIndex = buildReverseIndex();
+    if (reverseIndex[itemKey]) {
+        for (const route of reverseIndex[itemKey]) {
+            const sourceNeeded = Math.ceil(qty / route.yieldRate);
+            const catNeeded = route.cat ? Math.ceil(sourceNeeded * route.catReq) : 0;
+            const byproducts = [];
+            const routeData = EXTRACTION_ROUTES[route.source]?.[route.routeName];
+            if (routeData) {
+                for (const [yItem, yRate] of Object.entries(routeData.yields)) {
+                    if (yItem !== itemKey) {
+                        const amount = Math.floor(sourceNeeded * yRate);
+                        if (amount > 0) byproducts.push({ item: yItem, amount });
+                    }
+                }
+            }
+            results.push({ type: 'extraction', source: route.source, routeName: route.routeName, action: route.action, cat: route.cat, catNeeded, sourceNeeded, byproducts });
+        }
+    }
+
+    return results;
+}

@@ -35,5 +35,9 @@ export default {
     categories: { raw: "Suroviny", basicExt: "Základní extrakce", intOre: "Mezirudy", advOre: "Pokročilé rudy", catalyst: "Katalyzátory", refined: "Rafinované kovy", "Raw Materials": "Suroviny", "Basic Extractions": "Základní extrakce", "Intermediate Ores": "Mezirudy", "Advanced Ores": "Pokročilé rudy", "Catalysts": "Katalyzátory", "Refined Metals": "Rafinované kovy" },
     items: baseItems,
     helpHtml: helpContent['cs'],
-    ackBank: "Potvrdit", ackCart: "Potvrdit", ackPrefs: "Potvrdit", ackHelp: "Potvrdit", ackSettings: "Potvrdit"
+    ackBank: "Potvrdit", ackCart: "Potvrdit", ackPrefs: "Potvrdit", ackHelp: "Potvrdit", ackSettings: "Potvrdit",
+    searchPlaceholder: "Hledat...",
+    searchEmptyState: "Vyhledejte materiál pro zobrazení podrobností o výrobě.",
+    searchNotFound: "Nebyl nalezen žádný materiál s tímto názvem.",
+    targetMetalLabel: "Cílový Materiál:"
 };
