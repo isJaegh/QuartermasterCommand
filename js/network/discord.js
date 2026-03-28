@@ -125,7 +125,8 @@ export function copyDiscord() {
 export async function sendToDiscord() {
     const t = i18n[state.currentLang] || i18n['en'];
     const webhookUrl = document.getElementById('webhookUrl').value;
-    if (!webhookUrl || !webhookUrl.startsWith('https://discord.com/api/webhooks/')) {
+    const WEBHOOK_RE = /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
+    if (!webhookUrl || !WEBHOOK_RE.test(webhookUrl)) {
         alert(t.errWebhook || "Invalid Webhook URL");
         openModal('settingsModal');
         return;
