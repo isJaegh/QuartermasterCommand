@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../data/data.js';
+import { CATEGORIES, getAllItems } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { getRelevantItems } from '../core/engine.js';
 import { state } from '../state/store.js';
@@ -17,7 +17,7 @@ export function buildDiscordMessage() {
     let msg = `**${t.discHeader || 'LOGISTICS ORDER'}: ${targetName.toUpperCase()}**\n*Targeting ${targetVal} ${mode === 'stacks' ? 'Stacks' : 'Units'} of ${targetName}*\n\n`;
 
     let bankString = "";
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         let bankRaw = Number(document.getElementById('b_' + k)?.value) || 0;
         if (bankRaw > 0 && relevant.has(k)) {
             let fmtAmt = mode === 'stacks' ? bankRaw.toFixed(2) + " Stacks" : bankRaw.toLocaleString();
@@ -28,7 +28,7 @@ export function buildDiscordMessage() {
     if (bankString !== "") msg += `**CURRENT BANK STOCK:**\n\`\`\`\n${bankString}\`\`\`\n`;
 
     let marketString = ""; let hasMarket = false; let totalGold = 0;
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         let totalQty = 0;
         if (state.marketData[k]) {
             state.marketData[k].forEach(tier => {

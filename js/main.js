@@ -160,10 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('pipeline:changed', () => calculate());
 
-    window.addEventListener('scroll', () => {
-        const btn = document.getElementById('btnReturnTop');
-        if (btn) btn.style.display = (window.scrollY > 200) ? 'flex' : 'none';
-    });
+    const scrollBtn = document.getElementById('btnReturnTop');
+    const headerSentinel = document.querySelector('.app-header');
+    if (scrollBtn && headerSentinel) {
+        new IntersectionObserver(([entry]) => {
+            scrollBtn.style.display = entry.isIntersecting ? 'none' : 'flex';
+        }).observe(headerSentinel);
+    }
 });
 
 // ============================================================================

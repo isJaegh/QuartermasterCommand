@@ -17,8 +17,7 @@ export const state = {
     collapsedState: {},
     moduleVisibility: {},
     pipelineViewMode: 'overview',
-    globalRoutePref: null,
-    timer: null
+    globalRoutePref: null
 };
 
 /**

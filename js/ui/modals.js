@@ -5,13 +5,19 @@
 import { i18n } from '../data/lang.js';
 import { state } from '../state/store.js';
 
+let _activeModal = null;
+
 /**
  * Opens a modal. If it hasn't been opened yet, it lazy-loads the HTML from its template.
  * @param {string} modalId - The ID of the modal container (e.g., 'settingsModal')
  */
 export function openModal(modalId) {
-    // 1. Hide all currently open modals to prevent overlapping
-    document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+    // 1. Hide the previously open modal (avoids querying all .modal elements)
+    if (_activeModal && _activeModal !== modalId) {
+        const prev = document.getElementById(_activeModal);
+        if (prev) prev.style.display = 'none';
+    }
+    _activeModal = modalId;
 
     const modalContainer = document.getElementById(modalId);
     if (!modalContainer) {
@@ -54,9 +60,8 @@ export function openModal(modalId) {
  */
 export function closeModal(modalId) {
     const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'none';
-    }
+    if (modal) modal.style.display = 'none';
+    if (_activeModal === modalId) _activeModal = null;
 }
 
 /**

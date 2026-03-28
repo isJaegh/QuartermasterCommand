@@ -176,3 +176,9 @@ export const EXTRACTION_ROUTES = {
         "Blast Furnace (Bor)": { action: 'stepBlastFurnace', cat: "bor", catReq: 0.0715, yields: { gemmetal: 0.1824, lupium: 0.2048 } }
     }
 };
+
+let _itemsCache = null;
+export function getAllItems() {
+    if (!_itemsCache) _itemsCache = Object.values(CATEGORIES).flatMap(c => c.items);
+    return _itemsCache;
+}

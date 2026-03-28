@@ -1,5 +1,5 @@
 import { state, saveState } from '../state/store.js';
-import { CATEGORIES } from '../data/data.js';
+import { CATEGORIES, getAllItems } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { renderBankTable } from '../ui/bank.js';
 import { renderMarketTable, updateVisibility } from '../ui/market.js';
@@ -27,9 +27,9 @@ export function handleModeChange() {
         }
     };
 
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => convert('b_' + k));
+    getAllItems().forEach(k => convert('b_' + k));
 
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         if (state.marketData[k]) {
             state.marketData[k].forEach(tier => {
                 if (state.prevMode === 'units' && mode === 'stacks') tier.q = parseFloat((tier.q / 10000).toFixed(4));
@@ -61,17 +61,14 @@ export function calculateMax() {
     let originalTarget = Number(document.getElementById('targetAmount').value) || 0;
     let targetUnits = originalTarget * mult;
 
-    if (targetUnits <= 0) {
-        if (typeof showToast === 'function') showToast(t.noTarget || "Please set a valid target amount first.");
-        return;
-    }
+    if (targetUnits <= 0) return;
 
     const mR = document.getElementById('modRef').checked ? 1.03 : 1;
     const mE = document.getElementById('modExt').checked ? 1.03 : 1;
     const mM = document.getElementById('modMast').checked ? 1.06 : 1;
 
     let bank = {};
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         bank[k] = (Number(document.getElementById('b_' + k)?.value) || 0) * mult;
     });
 
@@ -170,7 +167,7 @@ function readInputs() {
     const purchased = {};
     let totalGold = 0;
 
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         bank[k] = (Number(document.getElementById('b_' + k)?.value) || 0) * mult;
 
         let buyQtyUnits = 0;
@@ -206,7 +203,7 @@ function renderEmpty({ t, targetMetal }) {
         document.getElementById('projectProgressText').style.color = "var(--text)";
     }
 
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         if (document.getElementById('cost_' + k)) document.getElementById('cost_' + k).innerText = "0.00";
         if (document.getElementById('stash_' + k)) document.getElementById('stash_' + k).innerText = "0";
     });
@@ -244,8 +241,9 @@ function runCalculations({ targetRaw, targetMetal, mult, mR, mE, mM, bank, purch
         window.activeResources.add(k);
     });
 
+    const prevPipelineStr = JSON.stringify(state.pipelineStepsRaw);
     const newPipeline = [...actualExtractions.extSteps, ...actualTree.steps];
-    if (JSON.stringify(newPipeline) !== JSON.stringify(state.pipelineStepsRaw)) {
+    if (JSON.stringify(newPipeline) !== prevPipelineStr) {
         state.completedSteps = [];
         state.focusIndex = 0;
     }
@@ -255,7 +253,7 @@ function runCalculations({ targetRaw, targetMetal, mult, mR, mE, mM, bank, purch
 }
 
 function renderLogistics({ mode, t, targetMetal, mult, bank, purchased, totalGold }, { grossTree, grossExtractions, actualExtractions, finalDeficits }) {
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         const costEl = document.getElementById('cost_' + k);
         const stashEl = document.getElementById('stash_' + k);
 

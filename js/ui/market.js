@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../data/data.js';
+import { CATEGORIES, getAllItems } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { state } from '../state/store.js';
 import { handlePipelineChange } from '../core/pipeline.js';
@@ -7,7 +7,7 @@ import { closeModal } from './modals.js';
 import { getItemName, getDefaultPrice } from '../utils/format.js';
 
 export function initMarketData() {
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         if (!state.marketData[k]) state.marketData[k] = [{ p: getDefaultPrice(k), q: 0 }];
     });
 }
@@ -30,7 +30,7 @@ export function clearMarketTier(k, idx) {
 }
 
 export function clearCart() {
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         state.marketData[k] = [{ p: getDefaultPrice(k), q: 0 }];
     });
     renderMarketTable();
@@ -73,7 +73,7 @@ export function autoFillMarketItem(k) {
 }
 
 export function autoFillCart() {
-    Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
+    getAllItems().forEach(k => {
         const mode = document.getElementById('mode').value;
         let needed = state.pureDeficits[k] || 0;
         state.marketData[k] = [{

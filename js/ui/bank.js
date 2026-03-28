@@ -1,4 +1,4 @@
-import { CATEGORIES } from '../data/data.js';
+import { CATEGORIES, getAllItems } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { state } from '../state/store.js';
 import { handlePipelineChange } from '../core/pipeline.js';
