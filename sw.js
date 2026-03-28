@@ -2,7 +2,7 @@
 // QUARTERMASTER COMMAND - SERVICE WORKER
 // ============================================================================
 
-const CACHE_NAME = 'qm-cache-v4'; // Bumped version to force a cache update
+const CACHE_NAME = 'qm-cache-v5'; // Bumped version to force a cache update
 
 // The exact paths to all the new modular files
 const urlsToCache = [
@@ -20,7 +20,9 @@ const urlsToCache = [
     './js/ui/modals.js',
     './js/ui/market_bank.js',
     './js/ui/theme.js',
-    './js/network/discord.js'
+    './js/network/discord.js',
+    './js/utils/format.js',
+    './js/utils/clipboard.js'
     // Add any font files or image paths here if you add them later
 ];
 

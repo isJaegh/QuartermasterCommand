@@ -1,6 +1,7 @@
 import { RECIPES, EXTRACT_MAP, EXTRACTION_ROUTES } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { state } from '../state/store.js';
+import { getItemName } from '../utils/format.js';
 export function getPrimaryChain(targetMetal) {
     let chain = [targetMetal];
     let current = targetMetal;
@@ -99,9 +100,9 @@ export function resolveTree(targetMetal, amount, bankData, mR) {
             const cat1Needed = Math.ceil(primaryNeeded * 0.5);
             const cat2Needed = Math.ceil(primaryNeeded * 0.5);
 
-            let itemNamePrimary = (t.items && t.items[recObj.primary]) ? t.items[recObj.primary] : recObj.primary;
-            let itemNameCat1 = (t.items && t.items[recObj.cat1]) ? t.items[recObj.cat1] : recObj.cat1;
-            let itemNameCat2 = (t.items && t.items[recObj.cat2]) ? t.items[recObj.cat2] : recObj.cat2;
+            let itemNamePrimary = getItemName(recObj.primary, t);
+            let itemNameCat1 = getItemName(recObj.cat1, t);
+            let itemNameCat2 = getItemName(recObj.cat2, t);
 
             let htmlStr = `<strong>${vAlloy} <span class="highlight">${primaryNeeded.toLocaleString()} ${itemNamePrimary}</span>, <span class="highlight">${cat1Needed.toLocaleString()} ${itemNameCat1}</span> ${vAnd} <span class="highlight">${cat2Needed.toLocaleString()} ${itemNameCat2}</span></strong>`;
 
@@ -121,8 +122,8 @@ export function resolveTree(targetMetal, amount, bankData, mR) {
             const oreNeeded = Math.ceil(missing / (recObj.oreYield * mR));
             const catNeeded = Math.ceil(oreNeeded * recObj.catReq);
 
-            let itemNameOre = (t.items && t.items[recObj.ore]) ? t.items[recObj.ore] : recObj.ore;
-            let itemNameCat = (t.items && t.items[recObj.cat]) ? t.items[recObj.cat] : recObj.cat;
+            let itemNameOre = getItemName(recObj.ore, t);
+            let itemNameCat = getItemName(recObj.cat, t);
 
             let htmlStr = `<strong>${vSmelt} <span class="highlight">${oreNeeded.toLocaleString()} ${itemNameOre}</span> ${vInMachine} Furnace ${vWith} <span class="highlight">${catNeeded.toLocaleString()} ${itemNameCat}</span></strong>`;
 
@@ -288,11 +289,11 @@ export function resolveExtractions(deficits, mE, mM, bankData) {
                     let vWith = t.stepWith || "with";
 
                     let machine = routeName.split(' (')[0];
-                    let itemNameSource = (t.items && t.items[source]) ? t.items[source] : source;
+                    let itemNameSource = getItemName(source, t);
 
                     let htmlAction = `<strong>${verb} <span class="highlight">${maxSourceReq.toLocaleString()} ${itemNameSource}</span> ${vInMachine} ${machine}`;
                     if (catQty > 0 && route.cat) {
-                        let itemNameCat = (t.items && t.items[route.cat]) ? t.items[route.cat] : route.cat;
+                        let itemNameCat = getItemName(route.cat, t);
                         htmlAction += ` ${vWith} <span class="highlight">${catQty.toLocaleString()} ${itemNameCat}</span>`;
                     }
                     htmlAction += `</strong>`;

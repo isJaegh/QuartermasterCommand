@@ -3,6 +3,8 @@ import { i18n } from '../data/lang.js';
 import { getRelevantItems } from '../core/engine.js';
 import { state } from '../state/store.js';
 import { openModal } from '../ui/modals.js';
+import { getItemName } from '../utils/format.js';
+import { buildShareCode, copyToClipboard } from '../utils/clipboard.js';
 
 export function buildDiscordMessage() {
     const t = i18n[state.currentLang] || i18n['en'];
@@ -11,7 +13,7 @@ export function buildDiscordMessage() {
     const targetMetal = document.getElementById('targetMetal').value;
     const relevant = getRelevantItems(targetMetal);
 
-    const targetName = (t.items && t.items[targetMetal]) ? t.items[targetMetal] : targetMetal;
+    const targetName = getItemName(targetMetal, t);
     let msg = `**${t.discHeader || 'LOGISTICS ORDER'}: ${targetName.toUpperCase()}**\n*Targeting ${targetVal} ${mode === 'stacks' ? 'Stacks' : 'Units'} of ${targetName}*\n\n`;
 
     let bankString = "";
@@ -19,7 +21,7 @@ export function buildDiscordMessage() {
         let bankRaw = Number(document.getElementById('b_' + k)?.value) || 0;
         if (bankRaw > 0 && relevant.has(k)) {
             let fmtAmt = mode === 'stacks' ? bankRaw.toFixed(2) + " Stacks" : bankRaw.toLocaleString();
-            let itemName = (t.items && t.items[k]) ? t.items[k] : k;
+            let itemName = getItemName(k, t);
             bankString += `- ${itemName}: ${fmtAmt}\n`;
         }
     });
@@ -36,7 +38,7 @@ export function buildDiscordMessage() {
         }
         if (totalQty > 0 && relevant.has(k)) {
             let fmtAmt = mode === 'stacks' ? totalQty.toFixed(2) + " Stacks" : totalQty.toLocaleString();
-            let itemName = (t.items && t.items[k]) ? t.items[k] : k;
+            let itemName = getItemName(k, t);
             marketString += `- ${itemName}: ${fmtAmt}\n`;
             hasMarket = true;
         }
@@ -53,7 +55,7 @@ export function buildDiscordMessage() {
         cat.items.forEach(k => {
             if (state.pureDeficits[k] > 0) {
                 let fmtAmt = mode === 'stacks' ? (state.pureDeficits[k] / 10000).toFixed(2) + " Stacks" : state.pureDeficits[k].toLocaleString();
-                let itemName = (t.items && t.items[k]) ? t.items[k] : k;
+                let itemName = getItemName(k, t);
                 catItems.push(`${itemName}: ${fmtAmt}`);
                 hasGather = true;
             }
@@ -92,7 +94,7 @@ export function buildDiscordMessage() {
     Object.keys(state.byproductsRaw).forEach(k => {
         if (state.byproductsRaw[k] > 0) {
             let fmtAmt = mode === 'stacks' ? (state.byproductsRaw[k] / 10000).toFixed(2) + " Stacks" : state.byproductsRaw[k].toLocaleString();
-            let itemName = (t.items && t.items[k]) ? t.items[k] : k;
+            let itemName = getItemName(k, t);
             bpString += `${bpCount}. ${itemName}: ${fmtAmt}\n`;
             bpCount++;
             hasByproducts = true;
@@ -103,12 +105,11 @@ export function buildDiscordMessage() {
 
     // Inject the generated Share Code into the Discord Message
     // Build the share code data directly from the state and DOM
-    const shareData = {
+    const shareCode = buildShareCode({
         market: state.marketData,
         target: document.getElementById('targetAmount')?.value || 10000,
         metal: document.getElementById('targetMetal')?.value || 'bleck'
-    };
-    const shareCode = btoa(JSON.stringify(shareData));
+    });
     msg += `**LOAD ORDER DATA CODE:**\n\`${shareCode}\`\n`;
 
     return msg;
@@ -116,8 +117,9 @@ export function buildDiscordMessage() {
 
 export function copyDiscord() {
     const t = i18n[state.currentLang] || i18n['en'];
-    navigator.clipboard.writeText(buildDiscordMessage());
-    alert(t.discCopied || "Copied to clipboard!");
+    copyToClipboard(buildDiscordMessage()).then(() => {
+        alert(t.discCopied || "Copied to clipboard!");
+    });
 }
 
 export async function sendToDiscord() {

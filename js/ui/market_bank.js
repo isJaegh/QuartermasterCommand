@@ -1,22 +1,19 @@
-import { CATEGORIES, defaultPrices } from '../data/data.js';
+import { CATEGORIES } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { state } from '../state/store.js';
 import { handlePipelineChange } from '../core/pipeline.js';
 import { getRelevantItems } from '../core/engine.js';
 import { closeModal } from './modals.js';
+import { getMultiplier, getItemName, getDefaultPrice } from '../utils/format.js';
 
 export function initMarketData() {
     Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
-        let p = defaultPrices[k];
-        if (!p) p = (k === 'tephra') ? 40 : 15;
-        if (!state.marketData[k]) state.marketData[k] = [{ p: p, q: 0 }];
+        if (!state.marketData[k]) state.marketData[k] = [{ p: getDefaultPrice(k), q: 0 }];
     });
 }
 
 export function addMarketTier(k) {
-    let p = defaultPrices[k];
-    if (!p) p = (k === 'tephra') ? 40 : 15;
-    state.marketData[k].push({ p: p, q: 0 });
+    state.marketData[k].push({ p: getDefaultPrice(k), q: 0 });
     renderMarketTable();
 }
 
@@ -34,9 +31,7 @@ export function clearMarketTier(k, idx) {
 
 export function clearCart() {
     Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
-        let p = defaultPrices[k];
-        if (!p) p = (k === 'tephra') ? 40 : 15;
-        state.marketData[k] = [{ p: p, q: 0 }];
+        state.marketData[k] = [{ p: getDefaultPrice(k), q: 0 }];
     });
     renderMarketTable();
     handlePipelineChange();
@@ -66,10 +61,7 @@ export function quickSubMarket(k, idx) {
 export function autoFillMarketItem(k) {
     const mode = document.getElementById('mode').value;
     let needed = state.pureDeficits[k] || 0;
-    let defaultP = defaultPrices[k];
-    if (!defaultP) defaultP = (k === 'tephra') ? 40 : 15;
-
-    let currentP = state.marketData[k]?.[0]?.p || defaultP;
+    let currentP = state.marketData[k]?.[0]?.p || getDefaultPrice(k);
 
     state.marketData[k] = [{
         p: currentP,
@@ -84,10 +76,8 @@ export function autoFillCart() {
     Object.values(CATEGORIES).flatMap(c => c.items).forEach(k => {
         const mode = document.getElementById('mode').value;
         let needed = state.pureDeficits[k] || 0;
-        let defaultP = defaultPrices[k];
-        if (!defaultP) defaultP = (k === 'tephra') ? 40 : 15;
         state.marketData[k] = [{
-            p: state.marketData[k]?.[0]?.p || defaultP,
+            p: state.marketData[k]?.[0]?.p || getDefaultPrice(k),
             q: mode === 'stacks' ? parseFloat((needed / 10000).toFixed(4)) : needed
         }];
     });
@@ -135,7 +125,7 @@ export function renderMarketTable() {
                     </div>`;
             });
 
-            let itemName = (t.items && t.items[k]) ? t.items[k] : (k.charAt(0).toUpperCase() + k.slice(1));
+            let itemName = getItemName(k, t);
 
             html += `<div class="market-card" id="row_m_${k}" style="display:none;">
                 <div class="market-card-header">
@@ -172,7 +162,7 @@ export function renderBankTable() {
 
         cat.items.forEach(k => {
             const val = Number(document.getElementById('b_' + k)?.value) || 0;
-            let itemName = (t.items && t.items[k]) ? t.items[k] : (k.charAt(0).toUpperCase() + k.slice(1));
+            let itemName = getItemName(k, t);
 
             html += `<div class="bank-row" id="row_b_${k}" style="display:none;">
                 <div style="font-weight:bold; color:var(--text);">${itemName}</div>
@@ -205,7 +195,7 @@ export function updateVisibility(targetMetal) {
         let catHasVisibleMarket = false;
 
         cat.items.forEach(k => {
-            let itemName = ((t.items && t.items[k]) ? t.items[k] : k).toLowerCase();
+            let itemName = getItemName(k, t).toLowerCase();
             let matchBankSearch = searchBank === "" || itemName.includes(searchBank);
             let matchCartSearch = searchCart === "" || itemName.includes(searchCart);
 

@@ -5,6 +5,7 @@ import { renderBankTable, renderMarketTable, updateVisibility } from '../ui/mark
 import { handlePipelineChange, clearPipelineProgress, updatePipelineVisuals, updateFocusView, navFocus } from './pipeline.js';
 import { resolveTree, resolveExtractions } from './engine.js';
 import { closeModal, openModal } from '../ui/modals.js';
+import { getMultiplier, getItemName } from '../utils/format.js';
 
 let timer = null; // Used for debouncing the run() function
 
@@ -55,7 +56,7 @@ export function calculateMax() {
     const t = i18n[state.currentLang] || i18n['en'];
     const targetMetal = document.getElementById('targetMetal').value;
     const mode = document.getElementById('mode').value;
-    const mult = mode === 'stacks' ? 10000 : 1;
+    const mult = getMultiplier(mode);
     let originalTarget = Number(document.getElementById('targetAmount').value) || 0;
     let targetUnits = originalTarget * mult;
 
@@ -95,7 +96,7 @@ export function calculateMax() {
         if (!hasDeficit) { best = mid; low = mid + 1; } else { high = mid - 1; }
     }
 
-    let targetName = (t.items && t.items[targetMetal]) ? t.items[targetMetal] : targetMetal;
+    let targetName = getItemName(targetMetal, t);
     let fmtOrig = mode === 'stacks' ? originalTarget + " Stk" : originalTarget.toLocaleString();
     let bestFmt = mode === 'stacks' ? (best / 10000).toFixed(4) : best.toLocaleString();
 
@@ -122,7 +123,7 @@ export function calculateMax() {
             let catItems = [];
             cat.items.forEach(k => {
                 if (origMissing[k] > 0) {
-                    let itemName = (t.items && t.items[k]) ? t.items[k] : (k.charAt(0).toUpperCase() + k.slice(1));
+                    let itemName = getItemName(k, t);
                     let amt = mode === 'stacks' ? (origMissing[k] / 10000).toFixed(2) + " Stk" : origMissing[k].toLocaleString();
                     catItems.push(`
                         <div style="display:flex; justify-content:space-between; padding: 8px 12px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: 4px; margin-bottom: 4px;">
@@ -157,7 +158,7 @@ export function calculate() {
     const targetRaw = Number(document.getElementById('targetAmount').value) || 0;
     const crafters = Math.max(1, Number(document.getElementById('crafters').value));
     const targetMetal = document.getElementById('targetMetal').value;
-    const mult = mode === 'stacks' ? 10000 : 1;
+    const mult = getMultiplier(mode);
 
     const chkBp = document.getElementById('chkBp');
     const showBp = chkBp ? chkBp.checked : false;
@@ -350,14 +351,14 @@ export function calculate() {
         });
 
         let mainYieldsStr = (stepObj.mainYields && stepObj.mainYields.length > 0) ? stepObj.mainYields.map(y => {
-            let yName = (t.items && t.items[y.item]) ? t.items[y.item] : (y.item.charAt(0).toUpperCase() + y.item.slice(1));
+            let yName = getItemName(y.item, t);
             return `<span class="highlight">${y.amount.toLocaleString()} ${yName}</span>`;
         }).join(', ') : "";
 
         let bpHtml = "";
         if (showBp) {
             let bpYieldsStr = (stepObj.byproducts && stepObj.byproducts.length > 0) ? stepObj.byproducts.map(y => {
-                let yName = (t.items && t.items[y.item]) ? t.items[y.item] : (y.item.charAt(0).toUpperCase() + y.item.slice(1));
+                let yName = getItemName(y.item, t);
                 return `${y.amount.toLocaleString()} ${yName}`;
             }).join(', ') : (t.none || "None");
             bpHtml = `<br><span style="color:var(--text-dim); font-weight:bold;">${t.stepByproducts || 'Byproducts:'}</span> <span style="color:var(--text-dim);">${bpYieldsStr}</span>`;

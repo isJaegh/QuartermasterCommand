@@ -2,6 +2,8 @@
 // QUARTERMASTER COMMAND - CENTRAL STATE MANAGEMENT
 // ============================================================================
 
+import { buildShareCode, copyToClipboard, parseShareCode } from '../utils/clipboard.js';
+
 export const state = {
     currentLang: 'en',
     prevMode: 'units',
@@ -118,12 +120,12 @@ export function generateShareCode() {
         target: document.getElementById('targetAmount')?.value,
         metal: document.getElementById('targetMetal')?.value
     };
-    const str = btoa(JSON.stringify(data));
+    const str = buildShareCode(data);
     const shareCodeEl = document.getElementById('shareCode');
 
     if (shareCodeEl) {
         shareCodeEl.value = str;
-        navigator.clipboard.writeText(str).then(() => {
+        copyToClipboard(str).then(() => {
             alert("Share code copied to clipboard!");
         });
     }
@@ -137,7 +139,7 @@ export function loadShareCode() {
     if (!shareCodeEl || !shareCodeEl.value) return;
 
     try {
-        const data = JSON.parse(atob(shareCodeEl.value));
+        const data = parseShareCode(shareCodeEl.value);
         if (data.market) state.marketData = data.market;
 
         const targetEl = document.getElementById('targetAmount');
