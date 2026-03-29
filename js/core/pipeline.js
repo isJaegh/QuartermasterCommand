@@ -45,19 +45,16 @@ export function updatePrefVisuals() {
     const rowYld = document.getElementById('row_chkYld');
 
     if (chkEff && chkYld) {
+        // Both toggles remain always clickable — only visual dimming indicates which is inactive
         if (chkEff.checked) {
-            chkYld.disabled = true;
-            if (rowYld) { rowYld.style.opacity = '0.4'; rowYld.style.pointerEvents = 'none'; }
-            if (rowEff) { rowEff.style.opacity = '1'; rowEff.style.pointerEvents = 'auto'; }
+            if (rowYld) { rowYld.style.opacity = '0.4'; }
+            if (rowEff) { rowEff.style.opacity = '1'; }
         } else if (chkYld.checked) {
-            chkEff.disabled = true;
-            if (rowEff) { rowEff.style.opacity = '0.4'; rowEff.style.pointerEvents = 'none'; }
-            if (rowYld) { rowYld.style.opacity = '1'; rowYld.style.pointerEvents = 'auto'; }
+            if (rowEff) { rowEff.style.opacity = '0.4'; }
+            if (rowYld) { rowYld.style.opacity = '1'; }
         } else {
-            chkEff.disabled = false;
-            chkYld.disabled = false;
-            if (rowEff) { rowEff.style.opacity = '1'; rowEff.style.pointerEvents = 'auto'; }
-            if (rowYld) { rowYld.style.opacity = '1'; rowYld.style.pointerEvents = 'auto'; }
+            if (rowEff) { rowEff.style.opacity = '1'; }
+            if (rowYld) { rowYld.style.opacity = '1'; }
         }
     }
 }

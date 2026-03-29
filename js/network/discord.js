@@ -2,7 +2,7 @@ import { CATEGORIES, getAllItems } from '../data/data.js';
 import { i18n } from '../data/lang.js';
 import { getRelevantItems } from '../core/engine.js';
 import { state } from '../state/store.js';
-import { openModal } from '../ui/modals.js';
+import { openModal, closeModal } from '../ui/modals.js';
 import { getItemName } from '../utils/format.js';
 import { buildShareCode, copyToClipboard } from '../utils/clipboard.js';
 import { showToast } from '../utils/toast.js';
@@ -119,8 +119,8 @@ export function buildDiscordMessage() {
 export function copyDiscord() {
     const t = i18n[state.currentLang] || i18n['en'];
     copyToClipboard(buildDiscordMessage())
-        .then(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); })
-        .catch(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); });
+        .then(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); closeModal('settingsModal'); })
+        .catch(() => { showToast(t.discCopied || "Copied to clipboard!", 'success'); closeModal('settingsModal'); });
 }
 
 export async function sendToDiscord() {
@@ -141,6 +141,7 @@ export async function sendToDiscord() {
 
         if (response.ok) {
             showToast("Order sent to Discord!", 'success');
+            closeModal('settingsModal');
         } else {
             const data = await response.json();
             showToast(`Discord Error: ${data.message}`, 'error');

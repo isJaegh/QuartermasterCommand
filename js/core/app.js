@@ -10,6 +10,10 @@ import { getMultiplier, getItemName } from '../utils/format.js';
 
 let timer = null;
 
+// Byproduct navigation history
+let byproductHistory = [];
+let byproductHistoryIndex = -1;
+
 // Helper function to determine if a material can be crafted/extracted
 export function isProduceable(k) {
     if (RECIPES[k]) return true;
@@ -201,9 +205,7 @@ function readInputs() {
 }
 
 function renderEmpty({ t, targetMetal }) {
-    const emptyMsg = targetMetal
-        ? `<div class="empty-msg">${t.noTarget || 'No target set.'}</div>`
-        : `<div class="empty-msg">${t.searchEmptyState || 'Search for a material to view production details.'}</div>`;
+    const emptyMsg = `<div class="empty-msg" style="text-align:center; padding: 20px; color: var(--text-dim); font-style: italic;">${t.searchEmptyState || 'Enter a material above to begin.'}</div>`;
     document.getElementById('gatherOutput').innerHTML = emptyMsg;
     document.getElementById('stepsOutput').innerHTML = "";
     document.getElementById('statStacks').innerText = "0.00";
@@ -213,6 +215,7 @@ function renderEmpty({ t, targetMetal }) {
     state.byproductsRaw = {};
     state.pureDeficits = {};
 
+    if (document.getElementById('mod_defGather')) document.getElementById('mod_defGather').style.display = 'none';
     if (document.getElementById('mod_mfgPipe')) document.getElementById('mod_mfgPipe').style.display = 'none';
     if (document.getElementById('mod_byproducts')) document.getElementById('mod_byproducts').style.display = 'none';
 
@@ -338,8 +341,8 @@ function renderLogistics({ mode, t, targetMetal, mult, showBp, bank, purchased, 
                 const vendorTag = isVendorSourced
                     ? ` <span style="font-size:0.75em; color:var(--accent); font-weight:normal;">[${(t.vendorSource || 'Magic Vendor')}]</span>`
                     : '';
-                let itemNameStr = `<span style="font-weight:bold; color:var(--text);">${itemName}${vendorTag}</span>`;
-                let itemNameCompleteStr = `<span style="font-weight:bold; color:var(--text-dim); text-decoration: line-through; opacity: 0.6;">${itemName}</span>`;
+                let itemNameStr = `<span style="color:var(--text);">${itemName}${vendorTag}</span>`;
+                let itemNameCompleteStr = `<span style="color:var(--text-dim); text-decoration: line-through; opacity: 0.6;">${itemName}</span>`;
 
                 if (isComplete) {
                     catHtml += `<div class="logistics-item" style="border-left-color: ${dynColor}; --prog: 100%; --hue: 120;">
@@ -439,15 +442,35 @@ function renderPipeline({ t, mode, crafters, showBp }) {
             routeHtml = `<div class="route-choices">${btns}</div>`;
         }
 
+        const sep = `<hr style="border:none; border-top: 1px dashed var(--border); margin: 6px 0;">`;
+        const hasButtons = sourceHtml !== '' || routeHtml !== '';
+
+        // Build per-step byproducts string
+        let byproductsStr = '';
+        if (showBp && stepObj.byproducts && stepObj.byproducts.length > 0) {
+            byproductsStr = stepObj.byproducts.map(y => {
+                let yName = getItemName(y.item, t);
+                return `<span style="color:var(--text-dim);">${y.amount.toLocaleString()} ${yName}</span>`;
+            }).join(', ');
+        }
+
+        const hasOutputs = mainYieldsStr !== '' || byproductsStr !== '';
+
         return `<div class="step-card ${completedClass}" id="step_${index}" data-action="toggleStep" data-index="${index}">
-            <div>
-                <span style="cursor:pointer; margin-right:8px; font-size: 1.1em; font-weight: bold;">${checkIcon}</span>
-                <span style="color:var(--text-dim); font-weight:bold; margin-right:5px;">${t.stepPrefix || 'Step'} ${index + 1}.</span>${modAction}${perCr}
+            <div style="display:flex; align-items:baseline; gap:6px; margin-bottom:4px;">
+                <span style="cursor:pointer; font-size:1.1em; flex-shrink:0;">${checkIcon}</span>
+                <span style="color:var(--text-dim); font-size:0.85em; flex-shrink:0;">${t.stepPrefix || 'Step'} ${index + 1}.</span>
             </div>
-            <div style="margin-top: 6px; font-size: 11px; padding-left: 28px;">
-                <span style="color:var(--success); font-weight:bold;">${t.stepYieldsMain || 'Yields:'}</span> ${mainYieldsStr}
+            <div style="padding-left: 26px; margin-bottom:${hasOutputs || hasButtons ? '6px' : '0'};">
+                ${modAction}${perCr}
             </div>
-            <div style="padding-left: 28px;">${sourceHtml}${routeHtml}</div>
+            ${hasOutputs ? `
+            <div style="padding-left: 26px; font-size: 11px; display:flex; flex-direction:column; gap:4px;">
+                ${sep}
+                ${mainYieldsStr !== '' ? `<div><span style="color:var(--success); font-weight:bold;">${t.stepYieldsMain || 'Yields:'}</span> ${mainYieldsStr}</div>` : ''}
+                ${byproductsStr !== '' ? `<div><span style="color:var(--warning); font-weight:bold;">${t.stepByproducts || 'Byproducts:'}</span> ${byproductsStr}</div>` : ''}
+            </div>` : ''}
+            ${hasButtons ? `<div style="padding-left: 26px;">${sep}${sourceHtml}${routeHtml}</div>` : ''}
         </div>`;
     }).join('');
 
@@ -461,7 +484,7 @@ function renderPipeline({ t, mode, crafters, showBp }) {
                 let itemName = getItemName(k, t);
                 const fmtVal = mode === 'stacks' ? (state.byproductsRaw[k] / 10000).toFixed(2) + " Stk" : state.byproductsRaw[k].toLocaleString();
 
-                let nameHtml = `<span style="font-weight:bold; color:var(--text);"><span class="clickable-byproduct" data-byproduct="${k}" style="cursor:pointer; color:var(--accent); text-decoration:underline;" title="View material details">${itemName}</span></span>`;
+                let nameHtml = `<span class="clickable-byproduct" data-byproduct="${k}" style="cursor:pointer; color:var(--accent); text-decoration:underline;" title="View material details">${itemName}</span>`;
 
                 catHtml += `<div class="logistics-item" style="border-left-color: var(--border); --prog: 0%;">
                     ${nameHtml}
@@ -495,14 +518,27 @@ export function calculate() {
     const inputs = readInputs();
 
     const btnMax = document.getElementById('ui_btnMaxText');
+    const hint = document.getElementById('prodCmdHint');
 
     if (!inputs.targetMetal || inputs.targetRaw <= 0) {
         if (btnMax) btnMax.disabled = true;
+        if (hint) hint.style.display = 'block';
         renderEmpty(inputs);
         return;
     }
 
     if (btnMax) btnMax.disabled = false;
+    const wasEmpty = hint && hint.style.display !== 'none';
+    if (hint) hint.style.display = 'none';
+    if (wasEmpty) {
+        const prodCmd = document.getElementById('mod_prodCmd');
+        if (prodCmd && !prodCmd.classList.contains('collapsed')) {
+            prodCmd.classList.add('collapsed');
+            state.collapsedState['mod_prodCmd'] = true;
+        }
+    }
+    const defGather = document.getElementById('mod_defGather');
+    if (defGather) defGather.style.display = '';
 
     const results = runCalculations(inputs);
     renderLogistics(inputs, results);
@@ -536,7 +572,38 @@ export function updateLogisticsOnly() {
     renderLogistics(inputs, { grossTree, grossExtractions, actualExtractions, finalDeficits });
 }
 
+function updateBpNavButtons() {
+    const backBtn = document.getElementById('ui_btnBpBack');
+    const fwdBtn = document.getElementById('ui_btnBpFwd');
+    if (backBtn) backBtn.disabled = byproductHistoryIndex <= 0;
+    if (fwdBtn) fwdBtn.disabled = byproductHistoryIndex >= byproductHistory.length - 1;
+}
+
+export function resetByproductHistory() {
+    byproductHistory = [];
+    byproductHistoryIndex = -1;
+}
+
+export function navigateByproduct(direction) {
+    const newIndex = byproductHistoryIndex + direction;
+    if (newIndex < 0 || newIndex >= byproductHistory.length) return;
+    byproductHistoryIndex = newIndex;
+    renderByproductModal(byproductHistory[byproductHistoryIndex]);
+    updateBpNavButtons();
+}
+
 export function processByproduct(k) {
+    // Truncate forward history when navigating to a new item from the middle
+    if (byproductHistoryIndex < byproductHistory.length - 1) {
+        byproductHistory = byproductHistory.slice(0, byproductHistoryIndex + 1);
+    }
+    byproductHistory.push(k);
+    byproductHistoryIndex = byproductHistory.length - 1;
+    renderByproductModal(k);
+    updateBpNavButtons();
+}
+
+function renderByproductModal(k) {
     const uses = new Set();
     const sources = new Set();
 
@@ -589,7 +656,7 @@ export function processByproduct(k) {
         sourcesArr.sort((a, b) => getItemName(a, t).localeCompare(getItemName(b, t))).forEach(u => {
             let uName = getItemName(u, t);
 
-            let uNameHtml = `<span class="clickable-byproduct" data-byproduct="${u}" style="font-weight:bold; color:var(--accent); cursor:pointer; text-decoration:underline; font-size: 14px;" title="View material details">${uName}</span>`;
+            let uNameHtml = `<span class="clickable-byproduct" data-byproduct="${u}" style="color:var(--text); cursor:pointer; text-decoration:underline; font-size: 14px;" title="View material details">${uName}</span>`;
 
             let btnHtml = isProduceable(u)
                 ? `<button class="btn-mini btn-route set-target-btn" data-target-item="${u}" data-target-name="${uName.replace(/"/g, '&quot;')}">${strSetTarget}</button>`
@@ -609,7 +676,7 @@ export function processByproduct(k) {
         usesArr.sort((a, b) => getItemName(a, t).localeCompare(getItemName(b, t))).forEach(u => {
             let uName = getItemName(u, t);
 
-            let uNameHtml = `<span class="clickable-byproduct" data-byproduct="${u}" style="font-weight:bold; color:var(--accent); cursor:pointer; text-decoration:underline; font-size: 14px;" title="View material details">${uName}</span>`;
+            let uNameHtml = `<span class="clickable-byproduct" data-byproduct="${u}" style="color:var(--text); cursor:pointer; text-decoration:underline; font-size: 14px;" title="View material details">${uName}</span>`;
 
             let btnHtml = isProduceable(u)
                 ? `<button class="btn-mini btn-route set-target-btn" data-target-item="${u}" data-target-name="${uName.replace(/"/g, '&quot;')}">${strSetTarget}</button>`

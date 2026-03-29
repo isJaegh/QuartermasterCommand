@@ -33,9 +33,9 @@
     --hm-low: #d97706;
     --hm-high: #dc2626;
     /* Route Colors */
-    --c-eff: #008ba3;
+    --c-eff: #006d82;
     --c-max: #7b1fa2;
-    --c-reg: #e65100;
+    --c-reg: #bf4300;
 }
 
     .light-theme .bank-category {
@@ -605,7 +605,7 @@ body {
     align-items: center;
     justify-content: center;
     background: var(--accent);
-    color: #000000 !important;
+    color: #ffffff !important;
     padding: 2px 6px;
     border-radius: 3px;
     font-size: 10px;
@@ -681,6 +681,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    gap: 16px;
 }
 
 input, select {
@@ -778,9 +779,13 @@ input, select {
 }
 
 .btn-sq {
-    width: 30px !important;
+    width: 34px !important;
     padding: 0 !important;
-    font-size: 14px;
+    font-size: 18px;
+}
+
+#ui_btnResetQty {
+    font-size: 18px !important;
 }
 
 .btn-stack {
@@ -1416,6 +1421,55 @@ select:focus {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-end;
+    }
+
+    /* Restart button: explicit size so it scales with the amount input */
+    #ui_btnResetQty {
+        min-width: 38px;
+        height: 38px;
+        font-size: 22px;
+    }
+
+    /* Production Command header: wrap so Preferences button never clips title */
+    #header_prodCmd .header-content {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    #btnOpenPrefs {
+        font-size: 10px;
+        padding: 3px 7px;
+    }
+
+    /* Search label + input: stack vertically on mobile to avoid clipping in long languages */
+    #mod_prodCmd .input-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    #mod_prodCmd .input-row > div,
+    #mod_prodCmd .input-row input,
+    #mod_prodCmd .input-row > div[style*="max-width"] {
+        width: 100%;
+        max-width: 100% !important;
+    }
+
+    /* Missing Components header: stack stats below title so arrow stays inline */
+    #header_defGather .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+    }
+
+    #header_defGather .header-content > span:last-child {
+        font-size: 10px;
+    }
+
+    /* Modal header action bar: wrap so Calculate Max and Show All never clip */
+    .modal-header-sticky {
+        flex-wrap: wrap;
+        gap: 8px;
     }
 }
 

@@ -5,99 +5,115 @@
 export const helpContent = {
 
     en: `
-            <p>Welcome to the <strong>Quartermaster Command</strong> Help Page. This application is an advanced, offline-capable dashboard designed to simplify complex metallurgy and extraction pipelines in Mortal Online 2.</p>
-            <p>Below you will find a breakdown of every feature and how to utilize it to maximize your refining efficiency.</p>
-            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">🌟 Key Features & How to Use Them</h3>
-            <h4 style="color:var(--text); margin-bottom: 5px;">1. Pipeline Intelligence & Dynamic Recipe Routing</h4>
+            <p>Welcome to the <strong>Quartermaster Command</strong> Help Page. This is an advanced, offline-capable crafting logistics dashboard for Mortal Online 2. Enter a target material in <strong>Production Command</strong> to begin calculating your production pipeline.</p>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Getting Started</h3>
+            <ol style="margin-top: 0; padding-left: 20px;">
+                <li style="margin-bottom: 6px;">Search for a material in <strong>Production Command</strong> and enter the desired amount.</li>
+                <li style="margin-bottom: 6px;">Fill in materials you already have in the <strong>Inventory</strong> panel.</li>
+                <li style="margin-bottom: 6px;">Add missing materials to the <strong>Market Cart</strong> with prices.</li>
+                <li style="margin-bottom: 6px;">Check off steps in the <strong>Manufacturing Pipeline</strong> as you work.</li>
+            </ol>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Production Command</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>What it does:</strong> Automatically maps out the multi-step extraction, refining, and smelting tasks required for complex metals like Steel, Tungsteel, and Oghmium.</li>
-                <li style="margin-bottom: 6px;"><strong>How to use it:</strong> Select your target metal and quantity. Choose your routing method:
-                    <ul style="margin-top: 4px;">
-                        <li style="margin-bottom: 4px;"><strong>[E] Efficient Path:</strong> Prioritizes recipes with the lowest raw material cost.</li>
-                        <li style="margin-bottom: 4px;"><strong>[Y] Max Yield:</strong> Prioritizes recipes that generate the highest amount of secondary byproducts.</li>
-                        <li style="margin-bottom: 4px;"><strong>[R] Region Locked:</strong> Restricts the calculation to only use machinery available in your specific local region.</li>
-                    </ul>
-                </li>
+                <li style="margin-bottom: 6px;"><strong>Search:</strong> Type any material name to find it. Click <strong>?</strong> to browse all produceable materials.</li>
+                <li style="margin-bottom: 6px;"><strong>Amount &amp; Reset:</strong> Enter your target quantity. The <strong>↺</strong> button resets to the default (10,000 units or 1 stack).</li>
+                <li style="margin-bottom: 6px;"><strong>Display Mode:</strong> Switch between <em>Units</em> and <em>Stacks (10k)</em> in Settings → View.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">2. Calculate Max Craftable</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Preferences</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>What it does:</strong> Instantly calculates the absolute maximum amount of a target metal you can produce based <em>strictly</em> on what you currently have in your bags or bank.</li>
-                <li style="margin-bottom: 6px;"><strong>How to use it:</strong> Enter your current on-hand materials into the inventory system, select your target metal, and trigger the calculation.</li>
+                <li style="margin-bottom: 6px;"><strong>Skill Modifiers:</strong> Toggle Mastery (+6%), Refining (+3%), and Extraction (+3%) to adjust yield calculations based on your character's skills.</li>
+                <li style="margin-bottom: 6px;"><strong>[E] Efficient Path:</strong> Routes the pipeline to minimize raw material cost. Selecting this turns off Max Yield, and vice versa. Both can be deselected for a neutral calculation.</li>
+                <li style="margin-bottom: 6px;"><strong>[Y] Max Yield:</strong> Routes the pipeline to maximize secondary byproduct generation.</li>
+                <li style="margin-bottom: 6px;"><strong>Show Byproducts:</strong> Toggle visibility of the Recovered Byproducts module.</li>
+                <li style="margin-bottom: 6px;"><strong>Crafters:</strong> Set the number of crafters splitting the workload. All pipeline step quantities are divided equally and rounded up per crafter.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">3. Smart Market Cart</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Manufacturing Pipeline</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>What it does:</strong> Acts as a shopping list and budget tracker for your refining pipelines.</li>
-                <li style="margin-bottom: 6px;"><strong>How to use it:</strong> Input local market prices and desired buy quantities. Use the <strong>Auto-Fill</strong> feature to let the system automatically calculate exactly what materials you are missing. The total gold cost updates dynamically.</li>
+                <li style="margin-bottom: 6px;"><strong>Steps:</strong> Each step shows what to craft, how much, and in which machine. Check off a step when done — yields are automatically added to your inventory.</li>
+                <li style="margin-bottom: 6px;"><strong>Overview / Focus Mode:</strong> Switch between seeing all steps at once or one step at a time using the Prev/Next navigation.</li>
+                <li style="margin-bottom: 6px;"><strong>Source Selection:</strong> For steps with multiple material sources (e.g., vendor vs. gathered), tap the source button to choose.</li>
+                <li style="margin-bottom: 6px;"><strong>Route Selection:</strong> When a step has multiple machine options, buttons show [E], [Y], or [R] badges. Select the route that fits your situation.</li>
+                <li style="margin-bottom: 6px;"><strong>Reset Pipeline:</strong> Clears all completed step checkmarks and removes their yields from inventory.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">4. Discord Dispatch</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Recovered Byproducts</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>What it does:</strong> Generates a beautifully formatted Markdown work order—cleanly separating items you need to buy on the Market from items that require Manual Gathering.</li>
-                <li style="margin-bottom: 6px;"><strong>How to use it:</strong> Once your pipeline and cart are ready, trigger the dispatch. Copy the text directly or push it straight to a Discord Webhook.</li>
+                <li style="margin-bottom: 6px;">Shows all secondary materials generated during the full pipeline.</li>
+                <li style="margin-bottom: 6px;"><strong>Click any byproduct</strong> to open its Material Details — see what it's produced from and what it can be used to make.</li>
+                <li style="margin-bottom: 6px;"><strong>Back / Forward navigation:</strong> Use the ← and → arrows in the Material Details window to move through your lookup history, just like a browser.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">5. State Sharing & Export</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Calculate Max Craftable</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>What it does:</strong> Allows you to save your current inventory, shopping cart, and pipeline goals to share with other crafters.</li>
-                <li style="margin-bottom: 6px;"><strong>How to use it:</strong> Click export to generate a short string code to share with guildmates, or choose CSV export to download your data as a spreadsheet.</li>
+                <li style="margin-bottom: 6px;">Opens the Inventory panel — click <strong>Calculate Max</strong> to find the maximum amount you can produce with your current stock.</li>
+                <li style="margin-bottom: 6px;">Uses a binary search algorithm to find the exact limit. Results show any shortfall still needed.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">6. Deep Customization & Bilingual Support</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Discord Dispatch</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Languages:</strong> Toggle between multiple languages at any time from the app settings.</li>
-                <li style="margin-bottom: 6px;"><strong>Customization:</strong> Access settings to toggle Dark/Light modes, adjust accent colors, and hide modules you don't actively need.</li>
+                <li style="margin-bottom: 6px;"><strong>Webhook URL:</strong> Enter your Discord webhook URL in Settings → Data. It is saved automatically so you don't need to re-enter it each session.</li>
+                <li style="margin-bottom: 6px;"><strong>Send Order to Discord:</strong> Posts a fully formatted logistics work order to your Discord channel and closes the settings panel.</li>
+                <li style="margin-bottom: 6px;"><strong>Copy to Clipboard:</strong> Copies the same formatted message for manual pasting, then closes the settings panel.</li>
             </ul>
-            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">🚀 Installation & Offline Setup</h3>
-            <p>Quartermaster Command is a static, client-side application requiring no backend.</p>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">State Sharing</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Web Browser:</strong> Simply access the hosted URL.</li>
-                <li style="margin-bottom: 6px;"><strong>Mobile / App Install (PWA):</strong> Visit the URL on a supported device and tap "Add to Home Screen" to install it as a native offline app.</li>
-                <li style="margin-bottom: 6px;"><strong>Local Use:</strong> Download the repository files and double-click <code>index.html</code>.</li>
+                <li style="margin-bottom: 6px;"><strong>Generate &amp; Copy:</strong> Creates a compact Base64 code containing your inventory, cart, target, and amount. Share it with guildmates.</li>
+                <li style="margin-bottom: 6px;"><strong>Load Code:</strong> Paste a code from a guildmate to instantly load their setup.</li>
+            </ul>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Mobile &amp; Accessibility</h3>
+            <ul style="margin-top: 0;">
+                <li style="margin-bottom: 6px;"><strong>Haptic Feedback:</strong> On supported devices, brief vibrations occur when typing and pressing buttons for tactile confirmation.</li>
+                <li style="margin-bottom: 6px;"><strong>PWA Install:</strong> Tap "Add to Home Screen" on mobile to install the app for offline use.</li>
+                <li style="margin-bottom: 6px;"><strong>Dark / Light Mode:</strong> Toggle in the sidebar footer. Accent colors are fully customizable in Settings → View.</li>
             </ul>`,
 
     fr: `
-            <p>Bienvenue sur la page d'aide de <strong>Quartermaster Command</strong>. Cette application est un tableau de bord avancé, fonctionnant hors-ligne, conçu pour simplifier les processus complexes de métallurgie et d'extraction dans Mortal Online 2.</p>
-            <p>Vous trouverez ci-dessous une description détaillée de chaque fonctionnalité et de la manière de l'utiliser pour maximiser l'efficacité de votre raffinage.</p>
-            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">🌟 Fonctionnalités Principales et Guide d'Utilisation</h3>
-            <h4 style="color:var(--text); margin-bottom: 5px;">1. Intelligence de Pipeline & Routage Dynamique</h4>
+            <p>Bienvenue sur la page d'aide de <strong>Quartermaster Command</strong>. Tableau de bord logistique avancé pour Mortal Online 2. Entrez un matériau dans <strong>Commande de Production</strong> pour commencer.</p>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Démarrage Rapide</h3>
+            <ol style="margin-top: 0; padding-left: 20px;">
+                <li style="margin-bottom: 6px;">Recherchez un matériau dans <strong>Commande de Production</strong> et entrez la quantité désirée.</li>
+                <li style="margin-bottom: 6px;">Renseignez vos matériaux en stock dans l'<strong>Inventaire</strong>.</li>
+                <li style="margin-bottom: 6px;">Ajoutez les matériaux manquants dans le <strong>Panier du Marché</strong>.</li>
+                <li style="margin-bottom: 6px;">Cochez les étapes du <strong>Pipeline de Fabrication</strong> au fur et à mesure.</li>
+            </ol>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Commande de Production</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Ce que ça fait :</strong> Planifie automatiquement les étapes complexes d'extraction, de raffinage et de fusion requises pour des métaux avancés comme l'Acier, le Tungsteel et l'Oghmium.</li>
-                <li style="margin-bottom: 6px;"><strong>Comment l'utiliser :</strong> Sélectionnez le métal désiré et la quantité. Choisissez votre méthode de routage :
-                    <ul style="margin-top: 4px;">
-                        <li style="margin-bottom: 4px;"><strong>[E] Voie Efficace :</strong> Priorise les recettes avec le coût en matières premières le plus bas.</li>
-                        <li style="margin-bottom: 4px;"><strong>[Y] Rendement Maximum :</strong> Priorise les recettes qui génèrent la plus grande quantité de sous-produits secondaires.</li>
-                        <li style="margin-bottom: 4px;"><strong>[R] Verrouillage Régional :</strong> Restreint le calcul pour utiliser uniquement les machines disponibles dans votre région spécifique.</li>
-                    </ul>
-                </li>
+                <li style="margin-bottom: 6px;"><strong>Recherche :</strong> Tapez un nom de matériau. Cliquez sur <strong>?</strong> pour parcourir tous les matériaux productibles.</li>
+                <li style="margin-bottom: 6px;"><strong>Quantité &amp; Réinitialisation :</strong> Le bouton <strong>↺</strong> remet la valeur par défaut (10 000 unités ou 1 pile).</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">2. Calcul du Maximum Fabricable</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Préférences</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Ce que ça fait :</strong> Calcule instantanément la quantité maximale absolue d'un métal cible que vous pouvez fabriquer en vous basant <em>strictement</em> sur ce que vous avez actuellement dans vos sacs ou votre banque.</li>
-                <li style="margin-bottom: 6px;"><strong>Comment l'utiliser :</strong> Entrez vos matériaux actuels dans le système d'inventaire, sélectionnez votre métal cible et lancez le calcul.</li>
+                <li style="margin-bottom: 6px;"><strong>Modificateurs de compétences :</strong> Maîtrise (+6%), Raffinage (+3%), Extraction (+3%).</li>
+                <li style="margin-bottom: 6px;"><strong>[E] Voie Efficace / [Y] Rendement Max :</strong> Ces deux options sont mutuellement exclusives — sélectionner l'une désactive l'autre. Les deux peuvent être désélectionnées.</li>
+                <li style="margin-bottom: 6px;"><strong>Artisans :</strong> Nombre de crafters partageant le travail. Les quantités du pipeline sont divisées équitablement.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">3. Panier de Marché Intelligent</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Pipeline de Fabrication</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Ce que ça fait :</strong> Sert de liste de courses et de suivi budgétaire pour vos pipelines de raffinage.</li>
-                <li style="margin-bottom: 6px;"><strong>Comment l'utiliser :</strong> Saisissez les prix du marché local et les quantités souhaitées. Utilisez <strong>Remplissage Automatique</strong> pour calculer les matériaux manquants. Le coût total en or se met à jour dynamiquement.</li>
+                <li style="margin-bottom: 6px;"><strong>Mode Aperçu / Focus :</strong> Basculez entre toutes les étapes ou une étape à la fois avec Préc./Suiv.</li>
+                <li style="margin-bottom: 6px;"><strong>Sélection de source :</strong> Choisissez la provenance du matériau (vendeur ou récolte).</li>
+                <li style="margin-bottom: 6px;"><strong>Sélection de route :</strong> Choisissez la machine selon les badges [E], [Y] ou [R].</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">4. Envoi sur Discord (Discord Dispatch)</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Sous-produits Récupérés</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Ce que ça fait :</strong> Génère un bon de travail magnifiquement formaté en Markdown, séparant les articles à acheter de ceux nécessitant une récolte manuelle.</li>
-                <li style="margin-bottom: 6px;"><strong>Comment l'utiliser :</strong> Une fois prêt, déclenchez l'envoi pour copier le texte ou le pousser vers un Webhook Discord.</li>
+                <li style="margin-bottom: 6px;"><strong>Cliquez</strong> sur un sous-produit pour voir ses détails (sources et utilisations).</li>
+                <li style="margin-bottom: 6px;"><strong>Navigation ← →</strong> pour parcourir l'historique des consultations.</li>
             </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">5. Partage d'État et Exportation</h4>
+
+            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">Dispatch Discord</h3>
             <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Ce que ça fait :</strong> Permet de sauvegarder votre inventaire, panier et objectifs pour les partager.</li>
-                <li style="margin-bottom: 6px;"><strong>Comment l'utiliser :</strong> Cliquez sur exporter pour générer un code texte à partager avec votre guilde, ou exportez en CSV.</li>
-            </ul>
-            <h4 style="color:var(--text); margin-bottom: 5px;">6. Personnalisation Avancée et Bilinguisme</h4>
-            <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Langues :</strong> Basculez entre plusieurs langues depuis les paramètres.</li>
-                <li style="margin-bottom: 6px;"><strong>Personnalisation :</strong> Ajustez le mode Sombre/Clair, les couleurs d'accentuation, et masquez les panneaux inutilisés.</li>
-            </ul>
-            <h3 style="border-bottom: 1px solid var(--border); padding-bottom: 4px; margin-top: 20px;">🚀 Installation et Configuration Hors-Ligne</h3>
-            <p>Quartermaster Command est une application statique côté client (aucun serveur requis).</p>
-            <ul style="margin-top: 0;">
-                <li style="margin-bottom: 6px;"><strong>Utilisation Web :</strong> Accédez simplement à l'URL hébergée.</li>
-                <li style="margin-bottom: 6px;"><strong>Installation Mobile / PWA :</strong> Visitez l'URL sur un appareil compatible et appuyez sur "Ajouter à l'écran d'accueil".</li>
-                <li style="margin-bottom: 6px;"><strong>Utilisation Locale :</strong> Téléchargez les fichiers et ouvrez <code>index.html</code>.</li>
+                <li style="margin-bottom: 6px;"><strong>URL Webhook :</strong> Enregistrée automatiquement — pas besoin de la saisir à chaque session.</li>
+                <li style="margin-bottom: 6px;"><strong>Envoyer / Copier :</strong> Le panneau paramètres se ferme automatiquement après l'envoi ou la copie.</li>
             </ul>`,
 
     de: `<p>Willkommen auf der <strong>Quartermaster Command</strong> Hilfeseite. Verwenden Sie das Seitenleistenmenü für die Navigation. Das System wählt automatisch die besten Routen zum Raffinieren.</p>`,

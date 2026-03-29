@@ -5,7 +5,7 @@
 import { state, saveState, loadState, clearAll, generateShareCode, loadShareCode } from './state/store.js';
 import { openModal, closeModal, switchTab, switchHelpTab, toggleSidebar } from './ui/modals.js';
 import { restartPipeline, navFocus, setPipelineView, toggleGlobalPref, toggleStep, updatePathChoice, handlePipelineChange, updateSourceChoice } from './core/pipeline.js';
-import { calculate, handleModeChange, targetMetalChanged, calculateMax, processByproduct } from './core/app.js';
+import { calculate, handleModeChange, targetMetalChanged, calculateMax, processByproduct, navigateByproduct, resetByproductHistory } from './core/app.js';
 import { applyColors, resetColors, toggleTheme, syncColorPickers } from './ui/theme.js';
 import { sendToDiscord, copyDiscord } from './network/discord.js';
 import { renderBankTable } from './ui/bank.js';
@@ -69,17 +69,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. GLOBAL CLICK DELEGATION
     // ========================================================================
     document.addEventListener('click', (e) => {
+        // Haptic feedback for button presses on mobile
+        if (e.target.closest('button') && 'vibrate' in navigator) {
+            navigator.vibrate(30);
+        }
+
         const target = e.target;
 
         // 1. Close modal when clicking the dark background overlay
         if (target.classList.contains('modal')) {
+            if (target.id === 'usesModal') resetByproductHistory();
             closeModal(target.id);
             return;
         }
 
         // 2. Handle closing modals via the 'X' icon or 'Acknowledge' buttons
         if (target.closest('[data-close]')) {
-            closeModal(target.closest('[data-close]').dataset.close);
+            const modalId = target.closest('[data-close]').dataset.close;
+            if (modalId === 'usesModal') resetByproductHistory();
+            closeModal(modalId);
             return;
         }
 
@@ -94,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetKey = setTargetBtn.dataset.targetItem;
             const targetName = setTargetBtn.dataset.targetName;
 
+            resetByproductHistory();
             closeModal('usesModal');
 
             document.getElementById('targetMetal').value = targetKey;
@@ -192,13 +201,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (btn.id === 'btnPipeReset') restartPipeline();
-            if (btn.id === 'btnFocusPrev') navFocus(-1);
-            if (btn.id === 'btnFocusNext') navFocus(1);
+            if (btn.id === 'btnFocusPrev') { navFocus(-1); btn.replaceWith(btn.cloneNode(true)); }
+            if (btn.id === 'btnFocusNext') { navFocus(1); btn.replaceWith(btn.cloneNode(true)); }
+            if (btn.id === 'ui_btnBpBack') { navigateByproduct(-1); btn.replaceWith(btn.cloneNode(true)); }
+            if (btn.id === 'ui_btnBpFwd') { navigateByproduct(1); btn.replaceWith(btn.cloneNode(true)); }
 
             if (btn.id === 'ui_btnResetQty') {
                 const mode = document.getElementById('mode').value;
                 document.getElementById('targetAmount').value = mode === 'stacks' ? 1 : 10000;
                 document.getElementById('targetAmount').dispatchEvent(new Event('input', { bubbles: true }));
+                btn.blur();
             }
         }
 
@@ -282,6 +294,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('input', (e) => {
+        // Haptic feedback for typing on mobile
+        if ((e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') && 'vibrate' in navigator) {
+            navigator.vibrate(10);
+        }
+
         const target = e.target;
         if (['targetAmount', 'crafters'].includes(target.id)) {
             if (isLookupMode()) refreshLookup();

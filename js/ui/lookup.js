@@ -139,9 +139,9 @@ export function initUnifiedSearch() {
         const t = i18n[state.currentLang] || i18n['en'];
         const items = [];
         CATEGORIES.forEach(cat => {
-            // REMOVED block on searching Raw Materials (like Granum, Saburra)
             cat.items.forEach(key => {
-                if (isProduceable(key) || cat.id === 'raw') {
+                // Only allow searching for materials that can be produced/extracted
+                if (isProduceable(key)) {
                     items.push({ key, name: getItemName(key, t) });
                 }
             });

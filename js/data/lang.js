@@ -41,6 +41,18 @@ export function setLang(lang) {
         if (cartSearch) cartSearch.placeholder = t.searchPlaceholder;
     }
 
+    const btnResetQty = document.getElementById('ui_btnResetQty');
+    if (btnResetQty && t.resetTooltip) btnResetQty.title = t.resetTooltip;
+
+    const statusEl = document.getElementById('saveStatus');
+    if (statusEl) {
+        statusEl.dataset.saved = t.statusSaved || "Saved";
+        statusEl.dataset.ready = t.statusReady || "Ready";
+        if (statusEl.innerText !== (t.statusSaved || "Saved") && statusEl.innerText !== "Saved") {
+            statusEl.innerText = t.statusReady || "Ready";
+        }
+    }
+
     // 3. Update language dropdown selector
     const langEl = document.getElementById('lang');
     if (langEl) langEl.value = lang;

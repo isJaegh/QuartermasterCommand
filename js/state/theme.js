@@ -17,31 +17,40 @@ function syncThemeSwitch() {
     }
 }
 
-function applyColors(fromLoad = false) {
+export function applyColors(fromLoad = false) {
     const isLight = document.body.classList.contains('light-theme');
     const themeKey = isLight ? 'light' : 'dark';
+
+    const cAccent = document.getElementById('colorAccent')?.value;
+    const cBg = document.getElementById('colorBg')?.value;
+    const cText = document.getElementById('colorText')?.value;
+
+    if (cAccent) document.documentElement.style.setProperty('--accent', cAccent);
+    if (cBg) document.documentElement.style.setProperty('--bg-card', cBg);
+    if (cText) document.documentElement.style.setProperty('--text', cText);
+
     const defs = defaultColors[themeKey];
-
-    let cAccent = document.getElementById('colorAccent')?.value || defs.accent;
-    let cBg = document.getElementById('colorBg')?.value || defs.bg;
-    let cText = document.getElementById('colorText')?.value || defs.text;
-
-    document.documentElement.style.setProperty('--accent', cAccent);
-    document.documentElement.style.setProperty('--bg-card', cBg);
-    document.documentElement.style.setProperty('--text', cText);
+    const isCustom = cAccent !== defs.accent || cBg !== defs.bg || cText !== defs.text;
 
     const btnReset = document.getElementById('ui_btnResetColors');
     if (btnReset) {
-        const isCustom = (cAccent.toLowerCase() !== defs.accent.toLowerCase() ||
-            cBg.toLowerCase() !== defs.bg.toLowerCase() ||
-            cText.toLowerCase() !== defs.text.toLowerCase());
         btnReset.disabled = !isCustom;
     }
 
-    if (!fromLoad) save();
+    if (!fromLoad) {
+        try {
+            let data = JSON.parse(localStorage.getItem('qm_data') || '{}');
+            if (!data.customColors) data.customColors = {};
+            data.customColors[themeKey] = {
+                accent: cAccent, bg: cBg, text: cText
+            };
+            localStorage.setItem('qm_data', JSON.stringify(data));
+        } catch (e) { }
+        saveState();
+    }
 }
 
-function resetColors() {
+export function resetColors() {
     const isLight = document.body.classList.contains('light-theme');
     const themeKey = isLight ? 'light' : 'dark';
     const defs = defaultColors[themeKey];
@@ -50,10 +59,10 @@ function resetColors() {
     if (document.getElementById('colorBg')) document.getElementById('colorBg').value = defs.bg;
     if (document.getElementById('colorText')) document.getElementById('colorText').value = defs.text;
 
-    applyColors();
+    applyColors(false);
 }
 
-function syncColorPickers() {
+export function syncColorPickers() {
     const isLight = document.body.classList.contains('light-theme');
     const themeKey = isLight ? 'light' : 'dark';
     const defs = defaultColors[themeKey];
@@ -71,7 +80,6 @@ function syncColorPickers() {
         }
     } catch (e) { }
 
-    // HTML input[type=color] expects exactly a 7 char hex (e.g. #FFFFFF)
     if (document.getElementById('colorAccent')) document.getElementById('colorAccent').value = cAccent;
     if (document.getElementById('colorBg')) document.getElementById('colorBg').value = cBg;
     if (document.getElementById('colorText')) document.getElementById('colorText').value = cText;

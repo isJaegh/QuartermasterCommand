@@ -1,7 +1,7 @@
 {
-  "name": "Quartermaster Command - MO2 Refining Suite",
+  "name": "Quartermaster Command - MO2 Crafting Suite",
   "short_name": "Quartermaster",
-  "description": "The ultimate Mortal Online 2 manufacturing calculator and logistics dashboard.",
+  "description": "The ultimate Mortal Online 2 crafting logistics dashboard — refining, butchering, and beyond.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f0f12",

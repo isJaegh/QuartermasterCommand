@@ -60,7 +60,8 @@ export function saveState() {
         collapsed: state.collapsedState,
         visibility: state.moduleVisibility,
         theme: isLight ? 'light' : 'dark',
-        globalRoutePref: state.globalRoutePref // Save the global route preference
+        globalRoutePref: state.globalRoutePref,
+        webhookUrl: document.getElementById('webhookUrl')?.value || ''
     };
 
     localStorage.setItem('qm_data', JSON.stringify(data));
@@ -68,8 +69,10 @@ export function saveState() {
     // Flash the save status indicator in the footer
     const status = document.getElementById('saveStatus');
     if (status) {
-        status.innerText = "Saved";
-        setTimeout(() => { if (status) status.innerText = "Ready"; }, 2000);
+        const textSaved = status.dataset.saved || "Saved";
+        const textReady = status.dataset.ready || "Ready";
+        status.innerText = textSaved;
+        setTimeout(() => { if (status) status.innerText = textReady; }, 2000);
     }
 }
 
@@ -114,6 +117,7 @@ export function loadState() {
                 document.body.classList.add('light-theme');
                 check('themeToggleCb', true);
             }
+            if (data.webhookUrl) set('webhookUrl', data.webhookUrl);
         } else {
             // Apply default 'efficient' preference for first-time users
             state.globalRoutePref = 'efficient';
@@ -123,16 +127,12 @@ export function loadState() {
         const checkSync = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
         if (state.globalRoutePref === 'efficient') {
             checkSync('chkEff', true);
-            const y = document.getElementById('chkYld');
             const rowY = document.getElementById('row_chkYld');
-            if (y) y.disabled = true;
-            if (rowY) { rowY.style.opacity = '0.4'; rowY.style.pointerEvents = 'none'; }
+            if (rowY) { rowY.style.opacity = '0.4'; }
         } else if (state.globalRoutePref === 'yield') {
             checkSync('chkYld', true);
-            const e = document.getElementById('chkEff');
             const rowE = document.getElementById('row_chkEff');
-            if (e) e.disabled = true;
-            if (rowE) { rowE.style.opacity = '0.4'; rowE.style.pointerEvents = 'none'; }
+            if (rowE) { rowE.style.opacity = '0.4'; }
         }
 
     } catch (e) {
